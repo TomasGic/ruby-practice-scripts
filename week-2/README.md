@@ -1,0 +1,1 @@
+This is a simple CLI app written in Ruby. It lets users add, delete and display tasks. 
