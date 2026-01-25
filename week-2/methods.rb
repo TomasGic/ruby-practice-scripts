@@ -36,8 +36,9 @@ def view_menu()
           2. to add a new task type 'add'
           3. to delete an existing task type 'del'
           4. to change the task's name type 'edit'
-          5. to display only completed tasks type 'dis-comp'
-          6. to exit the program type 'exit'"
+          5. to mark a task as complete type 'mark-comp'
+          6. to display only completed tasks type 'dis-comp'
+          7. to exit the program type 'exit'"
 end
 
 
@@ -61,6 +62,15 @@ def display_completed(tasks)
       puts "#{index+1}: #{task[:title]} - completed"
     end
   end
+end
+
+
+def mark_complete(tasks) 
+  puts "Type the number of the task you want to mark as complete"
+  task_num = gets.chomp.to_i
+  task_completed = tasks[task_num - 1]
+  task_completed[:done] = true
+  puts "Task #{task_completed[:title]} has been marked as complete!"
 end
  
 

@@ -30,6 +30,10 @@ while true
   when "dis-comp"
     display_completed(tasks)
   
+  when "mark-comp"
+    display_tasks(tasks)
+    mark_complete(tasks)
+  
   when "exit"
     break
   
