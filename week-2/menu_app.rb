@@ -25,6 +25,7 @@ while true
     delete_task(tasks)
 
   when "edit"
+    display_tasks(tasks)
     edit_task_name(tasks)
   
   when "dis-comp"

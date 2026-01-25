@@ -24,9 +24,10 @@ end
 
 def delete_task(tasks)
   puts "Type the number of the task you would like to delete."
-  task_num = gets.chomp.to_i
-  tasks.delete_at(task_num - 1)
-  puts "Task has been successfully deleted!"
+  task_index = gets.chomp.to_i - 1
+  deleted_task = tasks[task_index]
+  tasks.delete_at(task_index)
+  puts "Task #{deleted_task[:title]}has been successfully deleted!"
 end
 
 
