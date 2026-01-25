@@ -36,7 +36,8 @@ def view_menu()
           2. to add a new task type 'add'
           3. to delete an existing task type 'del'
           4. to change the task's name type 'edit'
-          5. to exit the program type 'exit'"
+          5. to display only completed tasks type 'dis-comp'
+          6. to exit the program type 'exit'"
 end
 
 
@@ -48,6 +49,18 @@ def edit_task_name(tasks)
   new_title = gets.chomp
   task_to_edit[:title] = new_title
   puts "Task name has been changed successfully!"
+end
+
+
+def display_completed(tasks)
+  completed_tasks = tasks.select { |task| task[:done] == true }
+  if completed_tasks.empty? 
+    puts "You don't have any completed tasks."
+  else 
+    completed_tasks.each_with_index do |task, index|
+      puts "#{index+1}: #{task[:title]} - completed"
+    end
+  end
 end
  
 

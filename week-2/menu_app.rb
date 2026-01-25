@@ -27,6 +27,9 @@ while true
   when "edit"
     edit_task_name(tasks)
   
+  when "dis-comp"
+    display_completed(tasks)
+  
   when "exit"
     break
   
