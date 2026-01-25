@@ -1,6 +1,8 @@
-def add_task(name, tasks)
+def add_task(tasks)
+  puts "Type the name of the task you would like to add."
+  task_name = gets.chomp
   task = {
-    title: name,
+    title: task_name,
     done: false
   }
   tasks.push(task)
@@ -20,9 +22,11 @@ def display_tasks(tasks)
 end
 
 
-def delete_task(tasks, index)
-  tasks.delete_at(index - 1)
-    puts "Task has been successfully deleted!"
+def delete_task(tasks)
+  puts "Type the number of the task you would like to delete."
+  task_num = gets.chomp.to_i
+  tasks.delete_at(task_num - 1)
+  puts "Task has been successfully deleted!"
 end
 
 
@@ -34,4 +38,6 @@ def view_menu()
           4. to exit the program type 'exit'"
 end
 
-
+def edit_task_name(tasks)
+  pass
+end

@@ -18,15 +18,11 @@ while true
     display_tasks(tasks)
   
   when "add"
-    puts "Type the name of the task you would like to add."
-    task_to_add = gets.chomp
-    add_task(task_to_add, tasks)
+    add_task(tasks)
     
   when "del"
     display_tasks(tasks)
-    puts "Type the number of the task you would like to delete."
-    task_number = gets.chomp.to_i
-    delete_task(tasks, task_number)
+    delete_task(tasks)
   
   when "exit"
     break
