@@ -35,11 +35,12 @@ def view_menu()
           1. to display all tasks type 'dis-all'
           2. to add a new task type 'add'
           3. to delete an existing task type 'del'
-          4. to exit the program type 'exit'"
+          4. to change the task's name type 'edit'
+          5. to exit the program type 'exit'"
 end
 
 
-def edit_task_name()
+def edit_task_name(tasks)
   puts "Type the number of the task you want to change the title of: "
   task_num = gets.chomp.to_i
   task_to_edit = tasks[task_num - 1] 

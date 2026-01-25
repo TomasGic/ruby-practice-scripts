@@ -23,6 +23,9 @@ while true
   when "del"
     display_tasks(tasks)
     delete_task(tasks)
+
+  when "edit"
+    edit_task_name(tasks)
   
   when "exit"
     break
