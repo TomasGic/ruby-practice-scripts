@@ -38,6 +38,15 @@ def view_menu()
           4. to exit the program type 'exit'"
 end
 
-def edit_task_name(tasks)
-  pass
+
+def edit_task_name()
+  puts "Type the number of the task you want to change the title of: "
+  task_num = gets.chomp.to_i
+  task_to_edit = tasks[task_num - 1] 
+  puts "Type the new name of the task:"
+  new_title = gets.chomp
+  task_to_edit[:title] = new_title
+  puts "Task name has been changed successfully!"
 end
+ 
+
