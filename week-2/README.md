@@ -20,3 +20,6 @@ Each option's logic is implemented using one helper method. The methods are the 
 7. mark_complete(tasks) - marks a specific task as complete. User chooses which task they want to mark as complete by providing the task's number. 
 
 8. display_completed(tasks) - displays all tasks that have been marked as completed. This helper method primarily uses the select method to filter the array by its status. 
+
+
+You can run the app in your terminal by typing 'ruby menu_app.rb' in your directory. 
