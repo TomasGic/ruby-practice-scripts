@@ -35,6 +35,9 @@ while true
     display_tasks(tasks)
     mark_complete(tasks)
   
+  when "del-all"
+    delete_all(tasks)
+  
   when "exit"
     break
   

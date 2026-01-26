@@ -75,3 +75,15 @@ def mark_complete(tasks)
 end
  
 
+def delete_all(tasks)
+  puts "Are you sure you want to delete all tasks? Y/N"
+  input = gets.chomp.downcase
+  if input == "y"
+    tasks.clear
+    puts "All your tasks have been successfully deleted."
+  elsif input == 'n'
+    return
+  else 
+    puts "invalid input - please enter Y for yes or N for no."
+  end
+end
