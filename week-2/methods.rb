@@ -39,7 +39,8 @@ def view_menu()
           4. to change the task's name type 'edit'
           5. to mark a task as complete type 'mark-comp'
           6. to display only completed tasks type 'dis-comp'
-          7. to exit the program type 'exit'"
+          7. to delete all tasks type 'del-all'
+          8. to exit the program type 'exit'"
 end
 
 
