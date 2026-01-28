@@ -1,0 +1,2 @@
+This is an improved version of the CLI app. It is a persistent task tracker meaning that the user's data persists after the execution of the program has finished. In the previous version of the app, the tasks that the user had saved were wiped out from the memory as soon as the program has finished executing. In this version, the tasks are saved on disk in a json file. As soon as the program starts, the data is loaded from the json file and is then desiarilized into the array object where it is further manipulated. 
+
