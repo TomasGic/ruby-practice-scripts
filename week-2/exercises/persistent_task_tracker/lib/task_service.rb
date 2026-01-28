@@ -41,7 +41,9 @@ def view_menu()
           6. to display only completed tasks type 'dis-comp'
           7. to delete all tasks type 'del-all'
           8. to search for a specific task type 'search'
-          9. to exit the program type 'exit'"
+          9. to sort the tasks alphabetically type 'sort-a'
+          10. to sort the tasks by their status type 'sort-s'
+          11. to exit the program type 'exit'"
 end
 
 
@@ -101,3 +103,13 @@ def search(tasks)
 end
 
 
+def sort_tasks_alphabetically(tasks)
+  sorted_tasks = tasks.sort_by {|task| task[:title]}
+  return sorted_tasks
+end
+
+
+def sort_tasks_by_status(tasks)
+  sorted_tasks = tasks.sort_by {|task| task[:done] ? 0: 1}
+  return sorted_tasks
+end

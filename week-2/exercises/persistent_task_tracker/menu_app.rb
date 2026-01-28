@@ -51,6 +51,16 @@ while true
     else display_tasks(results)
     end
   
+  when "sort-a"
+    tasks = sort_tasks_alphabetically(tasks)
+    display_tasks(tasks)
+    save_tasks(tasks)
+
+  when "sort-s"
+    tasks = sort_tasks_by_status(tasks)
+    display_tasks(tasks)
+    save_tasks(tasks)
+  
   when "exit"
     break
   
