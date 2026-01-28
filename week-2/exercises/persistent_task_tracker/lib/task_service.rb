@@ -40,7 +40,8 @@ def view_menu()
           5. to mark a task as complete type 'mark-comp'
           6. to display only completed tasks type 'dis-comp'
           7. to delete all tasks type 'del-all'
-          8. to exit the program type 'exit'"
+          8. to search for a specific task type 'search'
+          9. to exit the program type 'exit'"
 end
 
 
@@ -88,3 +89,15 @@ def delete_all(tasks)
     puts "invalid input - please enter Y for yes or N for no."
   end
 end
+
+
+def search(tasks)
+  puts "Type the name of the task you want to search: "
+  keyword = gets.chomp.downcase
+  search_results = tasks.select do |tasks|
+    tasks[:title].downcase.include?(keyword)
+  end
+  return search_results
+end
+
+

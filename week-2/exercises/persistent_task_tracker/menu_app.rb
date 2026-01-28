@@ -44,6 +44,13 @@ while true
     delete_all(tasks)
     save_tasks(tasks)
   
+  when "search"
+    results = search(tasks)
+    if results.empty?
+      puts "No tasks with the given name have been found"
+    else display_tasks(results)
+    end
+  
   when "exit"
     break
   
