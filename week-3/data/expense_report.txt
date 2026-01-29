@@ -1,0 +1,12 @@
+Total number of rows parsed is 15.
+Total amount of all expenses is $1212.1.
+
+Expenses by category:
+food - $82.8
+transport - $146.5
+entertainment - $982.8
+
+Top 3 expenses:
+2026-02-01, entertainment, PS5 Pro, 890.00
+2026-01-31, transport, plane, 120.00
+2026-02-02, entertainment, videogame, 49.90
