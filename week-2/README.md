@@ -3,7 +3,9 @@ This is a simple CLI app written in Ruby. It lets users add, delete, edit and di
 The app uses hashes inside an array as the main data structure model. Tasks is an array object which stores each individual task as a hash containing two key-value pairs - task's name and task's status.
 
 The app starts with an options menu which explains all possible commands that the user can enter. 
-Each option's logic is implemented using one helper method. The methods are the following: 
+Each option's logic is implemented using one helper method. 
+
+# The Methods
 
 1. view_menu() - displays all possible options for the user.
 
