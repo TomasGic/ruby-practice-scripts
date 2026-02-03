@@ -1,16 +1,16 @@
-This repo is for learning purposes and it contains a few basic ruby scripts.
+This repo is for learning purposes and it contains a few basic #ruby scripts.
 
 # arrays.rb
 
-declares two arrays, one array containing integers, one containing strings. 
+declares two arrays, one array containing #integers, one containing #strings. 
 
 on the num_array we use the sum method and print the result to the screen.
 
 we also use the push method to add number 3 to the end of the array. This operation mutates the original array in memory. We use the p method to print the array as an actual object.
 
-on the string array we use the pop method which removes the last element of the array. This operation also mutates the original array. 
+on the string array we use the pop method which removes the last element of the #array. This operation also mutates the original #array. 
 
-#conditionals.rb
+# conditionals.rb
 
 in this script we ask the user to input their age. We save the input to a variable users_age using the gets method. By default this method also records the new line character which we need to remove using chomp method and we also convert the input from string to integer. 
 
