@@ -30,6 +30,26 @@ def count_tags(filepath)
   return number_of_tags
 end
 
+
+def find_most_common_words(filepaths)
+  word_counts = Hash.new(0)
+  filepaths.each do |filepath|
+    File.foreach(filepath) do |line| 
+      next if line.strip.empty?
+      words = line.downcase.gsub(/[^a-z0-9\s]/, '').split
+      
+      words.each do |word|
+        word_counts[word] += 1
+      end
+    end
+  end
+  
+  
+  return word_counts.sort_by { |word, count| -count }.first(30).to_h
+end
+
+
+
 filepaths = Dir.glob("../**/*.md")
 number_of_files = filepaths.length
 global_word_count = 0
@@ -51,6 +71,7 @@ end
 puts "Total number of markdown files in the project directory is #{number_of_files}."
 puts "Total number of words across all markdown files is #{global_word_count}."
 
+puts find_most_common_words(filepaths)
 
 
 
