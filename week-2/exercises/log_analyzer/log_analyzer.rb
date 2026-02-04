@@ -1,4 +1,5 @@
 require_relative "lib/parser.rb"
+require "json"
 
 filepath = "data/access.log"
 
@@ -59,8 +60,19 @@ p paths_count
 error_counts = status_count.select { |status, count| status.to_i >= 400 }
 total_errors = error_counts.values.sum
 error_rate = total_errors.to_f/total_requests * 100
+formatted_error_rate = "%.2f%%" % error_rate
 puts "Total number of requests: #{total_requests}"
 puts "Total number of error requests: #{total_errors}"
-puts "Error percentage is approximately #{'%.2f' % error_rate}%."
+puts "Error percentage is approximately #{formatted_error_rate}."
 
+final_report = {
+  summary_stats: {"total_requests" => total_requests, "error rate" => formatted_error_rate},
+  requests_by_status: status_count,
+  requests_by_method: method_count,
+  requests_by_ip_address: ip_count,
+  requests_by_path: paths_count
+}
 
+File.open("data/report.json", "w") do |file|
+  file.write(JSON.pretty_generate(final_report))
+end
