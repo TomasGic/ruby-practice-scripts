@@ -10,6 +10,11 @@ status_count = Hash.new(0)
 ip_count = Hash.new(0)
 paths_count = Hash.new(0)
 
+unless File.exist?(filepath)
+  puts "File not found! Script terminated"
+  exit
+end
+
 File.foreach(filepath) do |line|
   if line.strip.empty?
     skipped_lines += 1
