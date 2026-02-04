@@ -5,6 +5,14 @@ number_of_rows = 0
 totals_by_category = Hash.new(0.0)
 all_rows = []
 
+filepath = "data/expenses.csv"
+
+unless File.exist?(filepath)
+  puts "File not found! Terminating script."
+  exit
+end
+
+
 CSV.foreach("data/expenses.csv", headers: true) do |row|
   next if row.fields.compact.empty?
   number_of_rows += 1
