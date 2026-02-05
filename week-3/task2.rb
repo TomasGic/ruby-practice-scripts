@@ -42,7 +42,7 @@ def find_most_common_words(filepaths)
   filepaths.each do |filepath|
     File.foreach(filepath) do |line| 
       next if line.strip.empty?
-      words = line.downcase.gsub(/[^a-z0-9\s]/, '').split
+      words = line.downcase.scan(/\w+/)
       
       words.each do |word|
         unless stopwords.include?(word)
