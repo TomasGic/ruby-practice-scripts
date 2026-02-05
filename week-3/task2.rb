@@ -33,17 +33,22 @@ end
 
 def find_most_common_words(filepaths)
   word_counts = Hash.new(0)
+  stopwords = Set.new([
+    "the", "this", "a", "an", "is", "of", "as", "that", "which", "what", "it", 
+    "on", "we", "to", "in", "and", "if", "all", "from", "for", "by", "how"
+  ])
   filepaths.each do |filepath|
     File.foreach(filepath) do |line| 
       next if line.strip.empty?
       words = line.downcase.gsub(/[^a-z0-9\s]/, '').split
       
       words.each do |word|
-        word_counts[word] += 1
+        unless stopwords.include?(word)
+          word_counts[word] += 1
+        end
       end
     end
   end
-  
   
   return word_counts.sort_by { |word, count| -count }.first(30).to_h
 end
@@ -68,9 +73,11 @@ filepaths.each do |filepath|
   
 end
 
+puts "\n"
 puts "Total number of markdown files in the project directory is #{number_of_files}."
 puts "Total number of words across all markdown files is #{global_word_count}."
-
+puts "\n"
+puts "30 most common words across all markdown files:\n"
 puts find_most_common_words(filepaths)
 
 
