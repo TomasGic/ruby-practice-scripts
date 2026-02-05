@@ -1,3 +1,5 @@
+require "json"
+
 def find_first_heading(filepath)
   File.foreach(filepath) do |line|
     next if line.strip.empty?
@@ -58,6 +60,7 @@ end
 filepaths = Dir.glob("../**/*.md")
 number_of_files = filepaths.length
 global_word_count = 0
+file_summary = []
 
 filepaths.each do |filepath|
   file_metadata = {}
@@ -69,9 +72,11 @@ filepaths.each do |filepath|
   file_metadata[:words] = word_count
   file_metadata[:first_heading] = find_first_heading(filepath)
   file_metadata[:tags] = count_tags(filepath)
-  p file_metadata
+  file_summary.push(file_metadata)
   
 end
+  
+
 
 puts "\n"
 puts "Total number of markdown files in the project directory is #{number_of_files}."
@@ -79,6 +84,10 @@ puts "Total number of words across all markdown files is #{global_word_count}."
 puts "\n"
 puts "30 most common words across all markdown files:\n"
 puts find_most_common_words(filepaths)
+
+File.open("out/notes_index.json", "w") do |file|
+  file.write(JSON.pretty_generate(file_summary))
+end
 
 
 

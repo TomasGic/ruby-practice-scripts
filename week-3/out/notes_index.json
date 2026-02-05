@@ -1,0 +1,50 @@
+[
+  {
+    "path": "../week-1/README.md",
+    "words": 683,
+    "first_heading": "arrays.rb",
+    "tags": 5
+  },
+  {
+    "path": "../week-2/DEBUGGING.md",
+    "words": 122,
+    "first_heading": "N/A",
+    "tags": 0
+  },
+  {
+    "path": "../week-2/README.md",
+    "words": 301,
+    "first_heading": "The Methods",
+    "tags": 0
+  },
+  {
+    "path": "../week-2/exercises/log_analyzer/README.md",
+    "words": 0,
+    "first_heading": "N/A",
+    "tags": 0
+  },
+  {
+    "path": "../week-2/exercises/persistent_task_tracker/README.md",
+    "words": 97,
+    "first_heading": "N/A",
+    "tags": 0
+  },
+  {
+    "path": "../week-3/BIG_O_NOTES.md",
+    "words": 0,
+    "first_heading": "N/A",
+    "tags": 0
+  },
+  {
+    "path": "../week-3/DEBUGGING.md",
+    "words": 0,
+    "first_heading": "N/A",
+    "tags": 0
+  },
+  {
+    "path": "../week-3/README.md",
+    "words": 0,
+    "first_heading": "N/A",
+    "tags": 0
+  }
+]
