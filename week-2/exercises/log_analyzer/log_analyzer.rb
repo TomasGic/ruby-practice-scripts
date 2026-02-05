@@ -22,25 +22,20 @@ File.foreach(filepath) do |line|
     next
   end
   log_data = parse_line(line)
-  # p log_data
+  p log_data
   request_method = log_data["method"]
   status_code = log_data["status"]
+  p status_code
   ip_address = log_data["ip"]
   path = log_data["path"]
-  if request_method
+  if request_method && status_code && ip_address && path
     total_requests += 1
     method_count[request_method] += 1
-  else 
-    puts "Invalid request"
-  end
-  if status_code
     status_count[status_code] += 1
-  end
-  if ip_address
     ip_count[ip_address] += 1
-  end
-  if path
     paths_count[path] += 1
+  else 
+    puts "Incomplete request...skipping"
   end
 end
 

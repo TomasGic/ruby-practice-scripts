@@ -1,4 +1,4 @@
-2026-01-26T10:00:01Z ip=1.2.3.4 method=GET path=/products status=200
+2026-01-26T10:00:01Z
 2026-01-26T10:00:02Z ip=1.2.3.4 method=GET path=/products status=200
 2026-01-26T10:00:03Z ip=9.9.9.9 method=POST path=/checkout status=500
 2026-01-26T10:00:04Z ip=5.5.5.5 method=GET path=/ status=200
