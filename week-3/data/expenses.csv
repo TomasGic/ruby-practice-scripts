@@ -1,7 +1,7 @@
 date,category,description,amount
-2026-01-29,food,coffee,2.40
+2026-01-29,food,coffee,
 2026-01-29,transport,bus,1.50
-2026-01-30,transport,train,8.50
+2026-01-30,,train,8.50
 2026-01-30,food,sandwich,4.60
 2026-01-30,entertainment,cinema,10.00
 2026-01-31,food,groceries,45.00

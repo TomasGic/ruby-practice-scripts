@@ -2,6 +2,7 @@ require "csv"
 
 total_amount = 0
 number_of_rows = 0
+skipped_rows = 0
 totals_by_category = Hash.new(0.0)
 all_rows = []
 
@@ -14,7 +15,12 @@ end
 
 
 CSV.foreach("data/expenses.csv", headers: true) do |row|
-  next if row.fields.compact.empty?
+  if row.fields.include?(nil)
+    puts "Missing value(s) detected. Skipping line"
+    skipped_rows += 1
+    next
+  end
+  p row.fields
   number_of_rows += 1
   current_amount = row["amount"].to_f
   category = row["category"]
@@ -47,6 +53,7 @@ end
 #We save the expenses report into a text file
 File.open("data/expense_report.txt", "w") do |file|
   file.puts "Total number of rows parsed is #{number_of_rows}."
+  file.puts "Total number of rows skipped is #{skipped_rows}."
   file.puts "Total amount of all expenses is $#{total_amount.round(2)}."
   file.puts "\n"
   file.puts "Expenses by category:"

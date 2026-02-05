@@ -1,9 +1,10 @@
-Total number of rows parsed is 15.
-Total amount of all expenses is $1212.1.
+Total number of rows parsed is 13.
+Total number of rows skipped is 2.
+Total amount of all expenses is $1201.2.
 
 Expenses by category:
-food - $82.8
-transport - $146.5
+transport - $138.0
+food - $80.4
 entertainment - $982.8
 
 Top 3 expenses:
