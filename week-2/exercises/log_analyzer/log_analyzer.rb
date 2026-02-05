@@ -25,7 +25,6 @@ File.foreach(filepath) do |line|
   p log_data
   request_method = log_data["method"]
   status_code = log_data["status"]
-  p status_code
   ip_address = log_data["ip"]
   path = log_data["path"]
   if request_method && status_code && ip_address && path
