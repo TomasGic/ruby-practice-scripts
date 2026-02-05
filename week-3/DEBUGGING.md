@@ -10,4 +10,8 @@ I've encountered this bug when trying to round the error rate percentage in the 
 
 Fix: Using formatting to display the float as a string for better readability. 
 
+3. Performing calculations with the expenses amount parsed from the csv file
+I've encountered this bug when trying to perform calculations with the value parsed from the csv file expenses.csv. I forgot that by default all the values from the csv file are parsed as strings. 
+
+Fix: when parsing the values convert them to float using .to_f
 
