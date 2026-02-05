@@ -51,7 +51,7 @@ sorted_rows_top3.each do |row|
 end
 
 #We save the expenses report into a text file
-File.open("data/expense_report.txt", "w") do |file|
+File.open("out/expense_report.txt", "w") do |file|
   file.puts "Total number of rows parsed is #{number_of_rows}."
   file.puts "Total number of rows skipped is #{skipped_rows}."
   file.puts "Total amount of all expenses is $#{total_amount.round(2)}."
