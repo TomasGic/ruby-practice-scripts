@@ -35,6 +35,8 @@ File.foreach(filepath) do |line|
     paths_count[path] += 1
   else 
     puts "Incomplete request...skipping"
+    skipped_lines += 1
+    next
   end
 end
 
