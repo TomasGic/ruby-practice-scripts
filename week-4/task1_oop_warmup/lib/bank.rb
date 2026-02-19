@@ -42,5 +42,4 @@ class BankAccount
   end
 end
 
-owner = AccountOwner.new("Tomas", "Gic")
-bank_account = BankAccount.new(owner: owner, balance: 2_000)
+
