@@ -20,11 +20,10 @@ docs.each do |doc_id, file_info|
   end
 end
 
-# p index
 
-
-def search_word(query, index, docs)
+def search_one_word(query, index, docs)
   word = query.strip.downcase
+  
   if index[word].empty?
     puts "No matches found"
     return
@@ -42,4 +41,34 @@ def search_word(query, index, docs)
   
 end
 
-search_word("ruby", index, docs)
+def search_multiple_words(query, index, docs)
+  query_words = query.strip.downcase.split(/\s+/)
+  first_word = query_words[0]
+  other_words = query_words[1..-1]
+
+  matching_doc_ids = index[first_word].keys
+  
+  other_words.each do |word|
+    matching_doc_ids &= index[word].keys
+    
+  end
+
+  if matching_doc_ids.empty?
+    puts "No matches found"
+  else
+    matching_doc_ids.each do |id|
+      query_words.each do |word|
+        count = index[word][id]
+        label = count == 1 ? "time" : "times"
+        puts "#{word} found #{count} #{label} in document id #{id}."
+      end
+    end
+  end
+  
+  
+end
+
+search_multiple_words("ruby analyzer", index, docs)
+
+
+
