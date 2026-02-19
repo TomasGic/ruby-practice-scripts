@@ -43,6 +43,33 @@ class BankAccount
 end
 
 
+class CreditCard
+  attr_reader :owner, :account, :limit, :balance
+  
+  def initialize (owner:, account:, limit:)
+    @owner = owner
+    @account = account
+    @limit = limit
+    @balance = 0
+  end
+
+  def charge(amount)
+    validate_transaction(amount)
+    @balance += amount
+  end
+
+  def make_payment(account:, amount:)
+    account.withdraw_amount(amount)
+    @balance -= amount
+  end
+
+  private
+
+  def validate_transaction(amount)
+    raise RuntimeError, "Transaction declined. Card limit exceeded!" if amount + @balance > @limit
+    
+  end
+end
 
 
 
