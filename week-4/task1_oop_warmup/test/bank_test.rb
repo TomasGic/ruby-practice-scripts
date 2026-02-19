@@ -34,3 +34,32 @@ class BankAccountTest < Minitest::Test
   end
 end
 
+
+class CreditCardTest < Minitest::Test
+  def setup
+    @owner = AccountOwner.new("Tomas", "Gic")
+    @account = BankAccount.new(owner: @owner, balance: 3_000)
+    @credit_card = CreditCard.new(owner: @owner, account: @account, limit: 2_500)
+  end
+
+  def test_card_initializes_with_0_balance
+    assert_equal 0, @credit_card.balance
+  end
+
+  def test_charging_card_increases_balance
+    assert_equal 200, @credit_card.charge(200)
+  end
+
+  def test_user_can_make_payment_from_checking_account
+    @credit_card.charge(200)
+    @credit_card.make_payment(account: @account, amount: 200)
+    assert_equal 2800, @account.balance
+    assert_equal 0, @credit_card.balance
+  end
+
+  def test_card_balance_cannot_exceed_limit
+    @credit_card.charge(2000)
+    assert_raises(RuntimeError) { @credit_card.charge(600) }
+  end
+end
+
