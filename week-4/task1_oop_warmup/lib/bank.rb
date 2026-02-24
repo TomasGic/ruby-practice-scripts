@@ -88,3 +88,10 @@ account.deposit_amount(3000)
 account.display_balance
 credit_card.display_balance
 
+credit_card.charge(540)
+credit_card.display_balance
+
+credit_card.make_payment(account: account, amount: 500)
+credit_card.display_balance
+account.display_balance
+
