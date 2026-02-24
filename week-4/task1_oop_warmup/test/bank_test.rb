@@ -32,6 +32,10 @@ class BankAccountTest < Minitest::Test
   def test_cannot_withdraw_more_than_500
     assert_raises(RuntimeError) { @account.withdraw_amount(550) }
   end
+
+  def test_user_can_view_balance
+    assert_output("Current balance is $2000.00.\n") { @account.display_balance }
+  end
 end
 
 
