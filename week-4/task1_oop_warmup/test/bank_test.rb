@@ -3,7 +3,7 @@ require_relative "../lib/bank"
 
 class BankAccountTest < Minitest::Test
   def setup
-    @owner = AccountOwner.new("Tomas", "Gic")
+    @owner = AccountOwner.new(first_name: "Tomas", last_name: "Gic")
     @account = BankAccount.new(owner: @owner, balance: 2000)
   end
 
@@ -12,7 +12,7 @@ class BankAccountTest < Minitest::Test
   end
 
   def test_account_cannot_initialize_with_negative_balance
-    assert_raises(ArgumentError) { BankAccount.new(owner: "Tomas Gic", balance: -10) }
+    assert_raises(ArgumentError) { BankAccount.new(owner: @owner, balance: -10) }
   end
 
   def test_deposit_increases_balance
@@ -41,7 +41,7 @@ end
 
 class CreditCardTest < Minitest::Test
   def setup
-    @owner = AccountOwner.new("Tomas", "Gic")
+    @owner = AccountOwner.new(first_name: "Tomas", last_name: "Gic")
     @account = BankAccount.new(owner: @owner, balance: 3_000)
     @credit_card = CreditCard.new(owner: @owner, account: @account, limit: 2_500)
   end
@@ -64,6 +64,10 @@ class CreditCardTest < Minitest::Test
   def test_card_balance_cannot_exceed_limit
     @credit_card.charge(2000)
     assert_raises(RuntimeError) { @credit_card.charge(600) }
+  end
+
+  def test_user_can_display_credit_card_balance
+    assert_output("Current balance is $0.00.\n") { @credit_card.display_balance }
   end
 end
 

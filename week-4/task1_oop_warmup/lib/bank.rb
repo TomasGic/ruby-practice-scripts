@@ -1,7 +1,7 @@
 class AccountOwner
-  attr_reader :first_name, :last_name
+  attr_reader :first_name, :last_name, :full_name
   
-  def initialize(first_name, last_name)
+  def initialize(first_name: , last_name:)
     @first_name = first_name
     @last_name = last_name
     @full_name = first_name + " " + last_name
@@ -57,6 +57,10 @@ class CreditCard
     @balance = 0
   end
 
+  def display_balance
+    puts "Current balance is $#{'%.2f' % @balance}."
+  end
+  
   def charge(amount)
     validate_transaction(amount)
     @balance += amount
@@ -76,4 +80,10 @@ class CreditCard
 end
 
 
+owner = AccountOwner.new(first_name: "Tomas", last_name: "Gic")
+account = BankAccount.new(owner: owner, balance: 2000)
+credit_card = CreditCard.new(owner: owner, account: account, limit: 2500)
+
+account.deposit_amount(3000)
+account.display_balance
 
