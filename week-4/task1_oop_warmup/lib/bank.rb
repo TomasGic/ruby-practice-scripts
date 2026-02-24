@@ -86,4 +86,5 @@ credit_card = CreditCard.new(owner: owner, account: account, limit: 2500)
 
 account.deposit_amount(3000)
 account.display_balance
+credit_card.display_balance
 
