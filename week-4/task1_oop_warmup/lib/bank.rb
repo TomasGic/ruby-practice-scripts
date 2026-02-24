@@ -17,10 +17,6 @@ class BankAccount
     @balance = balance 
   end
 
-  def display_balance
-    puts "Current balance is $#{'%.2f' % @balance}."
-  end
-
   def deposit_amount(amount)
     @balance += amount
   end
