@@ -14,7 +14,7 @@ class BankAccount
     @owner = owner
 
     validate_initial_balance!(balance)
-    @balance = balance 
+    @balance = balance.to_f 
   end
 
   def display_balance
