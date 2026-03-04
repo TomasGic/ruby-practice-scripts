@@ -75,7 +75,7 @@ class CreditCard
 
   def validate_transaction(amount)
     raise RuntimeError, "Transaction declined. Card limit exceeded!" if amount + @balance > @limit
-    
+    raise RuntimeError, "Card cannot be charged with negative amount or 0" if amount <= 0
   end
 end
 
@@ -88,7 +88,7 @@ account.deposit_amount(3000)
 account.display_balance
 credit_card.display_balance
 
-credit_card.charge(540)
+credit_card.charge(-540)
 credit_card.display_balance
 
 credit_card.make_payment(account: account, amount: 500)
