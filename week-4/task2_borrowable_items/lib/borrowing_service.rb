@@ -73,7 +73,17 @@ class Member
   end
 
   def view_active_loans
-    @active_loans.map { |loan| p loan.to_s}
+    if @active_loans.empty?
+      "No active loans"
+    else 
+      @active_loans.map { |loan| p loan.to_s}
+    end
+    
+  end
+
+  def remove_loan(item)
+    @active_loans.delete_if { |loan| loan.item == item}
+    item.return
   end
 end
 

@@ -60,6 +60,14 @@ class MemberTest < Minitest::Test
     assert_equal output, @member.view_active_loans
   end
 
+  def test_viewing_active_loans_if_no_active_loans_present
+    assert_equal "No active loans", @member.view_active_loans
+  end
   
+  def test_removing_loan_from_active_loans
+    @member.register_loan(@loan)
+    @member.remove_loan(@book)
+    assert_empty @member.active_loans
+  end
 end
 
