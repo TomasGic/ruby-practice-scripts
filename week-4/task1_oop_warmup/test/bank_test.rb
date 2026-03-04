@@ -7,6 +7,11 @@ class BankAccountTest < Minitest::Test
     @account = BankAccount.new(owner: @owner, balance: 2000)
   end
 
+  def test_balance_is_coerced_into_float_if_passed_as_string
+    account = BankAccount.new(owner: @owner, balance: "2000")
+    assert_equal 2000.0, account.balance
+  end
+
   def test_account_has_initial_balance 
     assert_equal 2_000, @account.balance
   end

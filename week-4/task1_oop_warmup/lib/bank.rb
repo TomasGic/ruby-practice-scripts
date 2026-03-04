@@ -42,7 +42,7 @@ class BankAccount
   end
 
   def validate_initial_balance!(balance)
-    raise ArgumentError, "Initial balance cannot be negative" if balance < 0
+    raise ArgumentError, "Initial balance cannot be negative" if balance.to_f < 0
   end
 end
 
@@ -80,18 +80,18 @@ class CreditCard
 end
 
 
-owner = AccountOwner.new(first_name: "Tomas", last_name: "Gic")
-account = BankAccount.new(owner: owner, balance: 2000)
-credit_card = CreditCard.new(owner: owner, account: account, limit: 2500)
+# owner = AccountOwner.new(first_name: "Tomas", last_name: "Gic")
+# account = BankAccount.new(owner: owner, balance: 2000)
+# credit_card = CreditCard.new(owner: owner, account: account, limit: 2500)
 
-account.deposit_amount(3000)
-account.display_balance
-credit_card.display_balance
+# account.deposit_amount(3000)
+# account.display_balance
+# credit_card.display_balance
 
-credit_card.charge(-540)
-credit_card.display_balance
+# credit_card.charge(-540)
+# credit_card.display_balance
 
-credit_card.make_payment(account: account, amount: 500)
-credit_card.display_balance
-account.display_balance
+# credit_card.make_payment(account: account, amount: 500)
+# credit_card.display_balance
+# account.display_balance
 
