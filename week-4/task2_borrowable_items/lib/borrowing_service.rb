@@ -58,3 +58,38 @@ class DVD < Item
   end
 end
 
+
+class Member
+  attr_reader :full_name, :active_loans
+  def initialize(first_name:, last_name:)
+    @full_name = first_name + " " + last_name
+    @id = SecureRandom.uuid
+    @active_loans = []
+  end
+
+  def register_loan(loan)
+    loan.item.borrow
+    @active_loans << loan
+  end
+
+  def view_active_loans
+    @active_loans.map { |loan| p loan.to_s}
+  end
+end
+
+class Loan
+  attr_reader :item, :member, :id
+
+  def initialize(item:, member:)
+    @item = item
+    @member = member
+    @id = SecureRandom.uuid
+  end
+
+  def to_s
+    "Loan ID: #{@id}, title: #{@item.title}, due date: #{@item.due_date}"
+  end
+end
+
+
+
