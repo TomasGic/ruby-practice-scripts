@@ -30,9 +30,9 @@ The project contains 3 classes:
  - CreditCard: represents the credit card which is linked to a particular bank         customer and their bank account. 
 
  ## Domain rules
- - The account holder cannot withdraw more than 500 at one time. 
+ - The account holder cannot withdraw more than 500 from their account at one time. 
  - The credit card is linked to 1 specific account holder and 1 specific bank account. 
- - The credit card holder can make payments from their primary account to reduce credit card balance 
+ - The credit card holder can make payments from their primary account to reduce credit card balance (debt) 
  - The bank account cannot go into overdraft (balance cannot be < 0)
 
 ## Edge cases covered
