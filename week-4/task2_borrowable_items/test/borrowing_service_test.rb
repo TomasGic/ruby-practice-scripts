@@ -103,4 +103,16 @@ class BorrowingServiceTest < Minitest::Test
     assert_nil @book.due_date
     assert_nil @dvd.due_date
   end
+
+  def test_member_cannot_have_too_many_active_loans
+    @member = Member.new(first_name: "Lucas", last_name: "Gic")
+    15.times do
+      book = Book.new(author: "Robert C. Martin", title: "Clean Code")
+      BorrowingService.borrow_item(item: book, member: @member)
+    end
+    extra_book = Book.new(author: "Robert C. Martin", title: "Clean Architecture")
+    
+    assert_raises(RuntimeError) { BorrowingService.borrow_item(item: extra_book, member: @member) }
+    
+  end
 end

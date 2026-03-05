@@ -100,11 +100,14 @@ class Loan
 end
 
 class BorrowingService
+  MAX_LOAN_LIMIT = 15
+  
   def self.borrow_item(item:, member:)
+    ensure_loan_limit_not_exceeded(member: member)
     loan = Loan.new(item: item, member: member)
     item.borrow
     member.register_loan(loan)
-    return loan
+    loan
   end
 
   def self.return_item(loan)
@@ -112,6 +115,14 @@ class BorrowingService
     member = loan.member
     item.return
     member.remove_loan(item)
+  end
+
+  private 
+
+  def self.ensure_loan_limit_not_exceeded(member:)
+    if member.active_loans.size >= MAX_LOAN_LIMIT
+      raise RuntimeError, "Cannot have more than #{MAX_LOAN_LIMIT} items on loan"
+    end
   end
 end
 
