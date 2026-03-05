@@ -75,26 +75,32 @@ class BorrowingServiceTest < Minitest::Test
   def setup
     @member = Member.new(first_name: "Tomas", last_name: "Gic")
     @book = Book.new(author: "Robert C. Martin", title: "Clean Code")
-    @loan = BorrowingService.checkout_item(item: @book, member: @member)
+    @book_loan = BorrowingService.checkout_item(item: @book, member: @member)
+    @dvd = DVD.new(director: "Sam Mendez", title: "Spectre", release_year: "2015")
+    @dvd_loan = BorrowingService.checkout_item(item: @dvd, member: @member)
   end
 
   def test_checkout_makes_item_unavailable
     refute @book.available?
+    refute @dvd.available?
   end
   
   def test_checkout_adds_loan_object_to_active_loans
-    assert_includes @member.active_loans, @loan
+    assert_includes @member.active_loans, @book_loan, @dvd_loan
   end
 
   def test_checkin_removes_loan_object_from_active_loans
     BorrowingService.checkin_item(item: @book, member: @member)
-    refute_includes @member.active_loans, @loan
+    BorrowingService.checkin_item(item: @dvd, member: @member)
+    refute_includes @member.active_loans, @book_loan, @dvd_loan
   end
 
   def test_checkin_makes_item_available_again_and_resets_due_date
     BorrowingService.checkin_item(item: @book, member: @member)
+    BorrowingService.checkin_item(item: @dvd, member: @member)
     assert @book.available?
+    assert @dvd.available?
     assert_nil @book.due_date
+    assert_nil @dvd.due_date
   end
 end
-
