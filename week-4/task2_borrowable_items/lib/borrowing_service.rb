@@ -68,7 +68,6 @@ class Member
   end
 
   def register_loan(loan)
-    loan.item.borrow
     @active_loans << loan
   end
 
@@ -83,7 +82,6 @@ class Member
 
   def remove_loan(item)
     @active_loans.delete_if { |loan| loan.item == item}
-    item.return
   end
 end
 
@@ -101,5 +99,19 @@ class Loan
   end
 end
 
+class BorrowingService
+  def self.checkout_item(item:, member:)
+    loan = Loan.new(item: item, member: member)
+    item.borrow
+    member.register_loan(loan)
+    return loan
+  end
 
+  def self.checkin_item(item:, member:)
+    loan = member.active_loans.find { |loan| loan.item == item }
+    raise RuntimeError, "Loan not found for this item" unless loan
+    member.remove_loan(item)
+    item.return
+  end
+end
 
