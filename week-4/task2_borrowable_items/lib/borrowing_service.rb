@@ -107,11 +107,11 @@ class BorrowingService
     return loan
   end
 
-  def self.return_item(item:, member:)
-    loan = member.active_loans.find { |loan| loan.item == item }
-    raise RuntimeError, "Loan not found for this item" unless loan
-    member.remove_loan(item)
+  def self.return_item(loan)
+    item = loan.item
+    member = loan.member
     item.return
+    member.remove_loan(item)
   end
 end
 

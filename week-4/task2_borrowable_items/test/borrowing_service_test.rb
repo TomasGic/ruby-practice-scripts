@@ -90,14 +90,14 @@ class BorrowingServiceTest < Minitest::Test
   end
 
   def test_checkin_removes_loan_object_from_active_loans
-    BorrowingService.return_item(item: @book, member: @member)
-    BorrowingService.return_item(item: @dvd, member: @member)
+    BorrowingService.return_item(@book_loan)
+    BorrowingService.return_item(@dvd_loan)
     refute_includes @member.active_loans, @book_loan, @dvd_loan
   end
 
   def test_checkin_makes_item_available_again_and_resets_due_date
-    BorrowingService.return_item(item: @book, member: @member)
-    BorrowingService.return_item(item: @dvd, member: @member)
+    BorrowingService.return_item(@book_loan)
+    BorrowingService.return_item(@dvd_loan)
     assert @book.available?
     assert @dvd.available?
     assert_nil @book.due_date
