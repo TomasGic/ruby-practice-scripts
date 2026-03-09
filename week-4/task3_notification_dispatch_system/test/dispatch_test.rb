@@ -74,6 +74,14 @@ class DispatcherTest < Minitest::Test
     assert_equal 1, dispatcher.logs.size
   end
 
+  def test_error_is_raised_when_notification_is_dispatched_with_empty_message
+    notification = Notification.new(recipient: "+31625888999", message: "", type: :sms)
+    dispatcher = Dispatcher.new(channels: [@mock_sms])
+    @mock_sms.expect :supports?, true, [notification]
+    error = assert_raises(StandardError) { dispatcher.dispatch(notification) }
+    assert_equal "Message cannot be empty", error.message
+    @mock_sms.verify
+  end
 end
 
 class EmailChannelTest < Minitest::Test 

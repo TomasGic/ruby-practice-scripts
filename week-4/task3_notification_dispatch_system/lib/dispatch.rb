@@ -9,8 +9,13 @@ class Dispatcher
     channel = @channels.find { |ch| ch.supports?(notification)} 
     if channel
       begin
-        channel.send(notification)
-        record_delivery(notification: notification, status: :success, error_message: nil)
+        if notification.message.nil? || notification.message.strip.empty?
+          raise StandardError, "Message cannot be empty"
+        else
+          success_message = channel.send(notification)
+          record_delivery(notification: notification, status: :success, error_message: nil)
+          success_message
+        end
       rescue StandardError => e
         record_delivery(notification: notification, status: :failed, error_message: e.message)
         raise e
@@ -38,7 +43,6 @@ class Notification
 end
 
 class EmailChannel
-
   EMAIL_PATTERN = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)+\z/i
   
   def initialize(client:)
@@ -64,7 +68,6 @@ class EmailChannel
 end
 
 class SmsChannel
-
   PHONE_NUMBER_PATTERN = /\A\+?[1-9]\d{7,14}\z/
   MAX_LENGTH_MESSAGE = 160
   
@@ -85,6 +88,7 @@ class SmsChannel
   end
 
   private
+  
   def validate_phone_number!(phone_number)
     raise InvalidRecipientError, "Invalid phone number" unless phone_number =~ PHONE_NUMBER_PATTERN
   end
