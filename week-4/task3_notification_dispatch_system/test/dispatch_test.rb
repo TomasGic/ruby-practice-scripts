@@ -42,9 +42,38 @@ class DispatcherTest < Minitest::Test
     dispatcher = Dispatcher.new(channels: channels)
 
     channels.each { |ch| ch.expect :supports?, false, [unsupported_notification] }
-    assert_raises(UnsupportedNotificationError) { dispatcher.dispatch(unsupported_notification) }
+    error = assert_raises(UnsupportedNotificationError) { dispatcher.dispatch(unsupported_notification) }
+    assert_equal "Notification type not supported", error.message
     channels.each(&:verify)
   end
+
+  def test_dispatcher_records_successful_email_delivery
+    dispatcher = Dispatcher.new(channels: [@mock_email])
+    @mock_email.expect :supports?, true, [@email_notification]
+    @mock_email.expect :send, true, [@email_notification]
+
+    dispatcher.dispatch(@email_notification)
+
+    record = dispatcher.logs[0]
+    assert_equal 1, dispatcher.logs.size
+    assert_equal @email_notification, record.notification
+    assert_equal :success, record.status
+    assert_nil record.error_message
+  end
+
+  def test_dispatcher_records_failed_email_delivery
+    dispatcher = Dispatcher.new(channels: [@mock_email])
+    @mock_email.expect :supports?, true, [@email_notification]
+    @mock_email.expect :send, nil, [] do |n|
+      assert_equal @email_notification, n
+      raise "Delivery failed"
+    end
+
+    error = assert_raises(RuntimeError) { dispatcher.dispatch(@email_notification) }
+    assert_equal "Delivery failed", error.message
+    assert_equal 1, dispatcher.logs.size
+  end
+
 end
 
 class EmailChannelTest < Minitest::Test 
@@ -88,3 +117,18 @@ class SmsChannelTest < Minitest::Test
     assert_raises(InvalidRecipientError) { @sms_channel.send(notification) }
   end
 end
+
+class DeliveryRecordTest < Minitest::Test 
+  def setup
+    @notification = Notification.new(recipient: "example@gmail.com", message: "Test", type: :email)
+  end
+
+  def test_record_initializes_with_correct_attributes
+    record = DeliveryRecord.new(notification: @notification, status: :success)
+
+    assert_equal @notification, record.notification
+    assert_equal :success, record.status
+    assert_nil record.error_message
+  end
+end
+

@@ -1,16 +1,31 @@
 class Dispatcher
+  attr_reader :channels, :logs
   def initialize(channels:)
     @channels = channels
+    @logs = []
   end
 
   def dispatch(notification)
     channel = @channels.find { |ch| ch.supports?(notification)} 
     if channel
-      channel.send(notification)
+      begin
+        channel.send(notification)
+        record_delivery(notification: notification, status: :success, error_message: nil)
+      rescue StandardError => e
+        record_delivery(notification: notification, status: :failed, error_message: e.message)
+        raise e
+      end
     else 
       raise UnsupportedNotificationError, "Notification type not supported"
     end
   end
+
+  private
+  def record_delivery(notification:, status:, error_message:)
+    delivery_record = DeliveryRecord.new(notification: notification, status: status, error_message: error_message)
+    @logs << delivery_record
+  end
+
 end
 
 class Notification
@@ -70,6 +85,15 @@ class SmsChannel
   private
   def validate_phone_number!(phone_number)
     raise InvalidRecipientError, "Invalid phone number" unless phone_number =~ PHONE_NUMBER_PATTERN
+  end
+end
+
+class DeliveryRecord 
+  attr_reader :notification, :status, :error_message
+  def initialize(notification:, status:, error_message: nil)
+    @notification = notification
+    @status = status
+    @error_message = error_message
   end
 end
 
