@@ -66,6 +66,7 @@ end
 class SmsChannel
 
   PHONE_NUMBER_PATTERN = /\A\+?[1-9]\d{7,14}\z/
+  MAX_LENGTH_MESSAGE = 160
   
   def initialize(client:)
     @client = client
@@ -77,6 +78,7 @@ class SmsChannel
 
   def send(notification)
     validate_phone_number!(notification.recipient)
+    validate_length!(notification.message)
     @client.send_sms(to: notification.recipient, body: notification.message)
     
     "Notification has been sent!\n#{notification.message}."
@@ -85,6 +87,10 @@ class SmsChannel
   private
   def validate_phone_number!(phone_number)
     raise InvalidRecipientError, "Invalid phone number" unless phone_number =~ PHONE_NUMBER_PATTERN
+  end
+
+  def validate_length!(message)
+    raise MessageTooLongError unless message.length <= MAX_LENGTH_MESSAGE 
   end
 end
 
@@ -99,5 +105,7 @@ end
 
 class UnsupportedNotificationError < StandardError; end
 class InvalidRecipientError < StandardError; end
+class MessageTooLongError < StandardError; end
+
 
 

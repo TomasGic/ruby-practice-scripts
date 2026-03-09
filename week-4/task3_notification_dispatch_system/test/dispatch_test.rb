@@ -96,6 +96,15 @@ class EmailChannelTest < Minitest::Test
     notification = Notification.new(recipient: "examplegmail.com", message: "Test", type: :email)
     assert_raises(InvalidRecipientError) { @email_channel.send(notification) }
   end
+
+  def test_sending_email_notification_returns_success_message
+    notification = Notification.new(recipient: "example@gmail.com", message: "Test", type: :email)
+    @mock_client.expect(:send_email, true) do |args|
+      args[:to] == notification.recipient && args[:body] == notification.message
+    end
+    success_message = @email_channel.send(notification)
+    assert_equal "Notification has been sent!\nTest.", success_message
+  end
 end
 
 class SmsChannelTest < Minitest::Test
@@ -115,6 +124,11 @@ class SmsChannelTest < Minitest::Test
   def test_error_is_raised_when_phone_number_invalid
     notification = Notification.new(recipient: "1234", message: "Test", type: :sms)
     assert_raises(InvalidRecipientError) { @sms_channel.send(notification) }
+  end
+
+  def test_error_is_raised_when_sms_too_long
+    notification = Notification.new(recipient: "+31619222555", message: "Test" * 50, type: :sms)
+    assert_raises(MessageTooLongError) { @sms_channel.send(notification) }
   end
 end
 
