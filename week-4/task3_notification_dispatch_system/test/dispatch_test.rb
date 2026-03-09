@@ -46,3 +46,45 @@ class DispatcherTest < Minitest::Test
     channels.each(&:verify)
   end
 end
+
+class EmailChannelTest < Minitest::Test 
+  def setup
+    @mock_client = Minitest::Mock.new
+    @email_channel = EmailChannel.new(client: @mock_client)
+  end
+
+  def test_email_channel_sends_email_with_valid_email_address
+    notification = Notification.new(recipient: "example@gmail.com", message: "Test", type: :email)
+
+    @mock_client.expect(:send_email, true) do |args|
+      args[:to] == notification.recipient && args[:body] == notification.message
+    end
+    @email_channel.send(notification)
+    @mock_client.verify
+  end
+
+  def test_error_is_raised_when_email_address_is_invalid
+    notification = Notification.new(recipient: "examplegmail.com", message: "Test", type: :email)
+    assert_raises(InvalidRecipientError) { @email_channel.send(notification) }
+  end
+end
+
+class SmsChannelTest < Minitest::Test
+  def setup
+    @mock_client = Minitest::Mock.new
+    @sms_channel = SmsChannel.new(client: @mock_client)
+  end
+  def test_sms_channel_sends_notification_with_valid_phone_number
+    notification = Notification.new(recipient: "+31619222555", message: "Test", type: :sms)
+    @mock_client.expect(:send_sms, true) do |args|
+      args[:to] == notification.recipient && args[:body] == notification.message
+    end
+    @sms_channel.send(notification)
+    @mock_client.verify
+  end
+
+  def test_error_is_raised_when_phone_number_invalid
+    notification = Notification.new(recipient: "1234", message: "Test", type: :sms)
+    assert_raises(InvalidRecipientError) { @sms_channel.send(notification) }
+  end
+end
