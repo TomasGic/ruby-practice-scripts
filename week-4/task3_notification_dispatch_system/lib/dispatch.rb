@@ -1,11 +1,13 @@
 class Dispatcher
   attr_reader :channels, :logs
   def initialize(channels:)
-    @channels = channels
+    @channels = channels # channels should be an array of objects that respond to supports? and send
     @logs = []
   end
 
   def dispatch(notification)
+    
+    # find the first channel that supports given notification type
     channel = @channels.find { |ch| ch.supports?(notification)} 
     if channel
       begin
@@ -13,10 +15,14 @@ class Dispatcher
           raise EmptyMessageError, "Message cannot be empty"
         else
           success_message = channel.send(notification)
+
+          # record successful delivery attempt into the logs array
           record_delivery(notification: notification, status: :success, error_message: nil)
           success_message
         end
       rescue => e
+
+        # record a failed delivery attempt into the logs array
         record_delivery(notification: notification, status: :failed, error_message: e.message)
         raise e
       end
@@ -43,10 +49,12 @@ class Notification
 end
 
 class EmailChannel
-  EMAIL_PATTERN = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)+\z/i
+  EMAIL_REGEX_PATTERN = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)+\z/i
   
+  # channel expects a client which in a real app is responsible for the actual
+  # notification delivery. In our system we do not use a real client. 
   def initialize(client:)
-    @client = client
+    @client = client 
   end
 
   def supports?(notification)
@@ -63,13 +71,13 @@ class EmailChannel
   private 
 
   def validate_email!(email_address)
-    raise InvalidRecipientError, "Invalid email address" unless email_address =~ EMAIL_PATTERN
+    raise InvalidRecipientError, "Invalid email address" unless email_address =~ EMAIL_REGEX_PATTERN
   end
 end
 
 class SmsChannel
-  PHONE_NUMBER_PATTERN = /\A\+?[1-9]\d{7,14}\z/
-  MAX_LENGTH_MESSAGE = 160
+  PHONE_NUMBER_PATTERN = /\A\+?\d{8,15}\z/ # Phone number should have minimum 8 and max 15 digits
+  MAX_LENGTH_MESSAGE = 160 # Sms message length should not exceed 160 characters
   
   def initialize(client:)
     @client = client
@@ -98,6 +106,7 @@ class SmsChannel
   end
 end
 
+# Represents a record of both a successful and failed delivery attempts
 class DeliveryRecord 
   attr_reader :notification, :status, :error_message
   def initialize(notification:, status:, error_message: nil)
@@ -107,6 +116,7 @@ class DeliveryRecord
   end
 end
 
+# Custom error classes
 class UnsupportedNotificationError < StandardError; end
 class InvalidRecipientError < StandardError; end
 class MessageTooLongError < StandardError; end
