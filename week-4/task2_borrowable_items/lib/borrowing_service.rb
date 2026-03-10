@@ -1,6 +1,7 @@
 require "securerandom"
 require "date"
 
+# Base class to represent all borrowable items
 class Item
   attr_reader :title, :due_date, :id
   def initialize(title:)
@@ -40,7 +41,7 @@ class Book < Item
   end
 
   def loan_period
-    21
+    21 # max loan period for books is 21 days
   end
   
 end
@@ -54,7 +55,7 @@ class DVD < Item
   end
 
   def loan_period
-    3
+    3 # max loan period for dvds is 3 days
   end
 end
 
@@ -62,7 +63,7 @@ end
 class Member
   attr_reader :full_name, :active_loans
   def initialize(first_name:, last_name:)
-    @full_name = first_name + " " + last_name
+    @full_name = "#{@first_name} #{@last_name}"
     @id = SecureRandom.uuid
     @active_loans = []
   end
@@ -85,6 +86,7 @@ class Member
   end
 end
 
+# Combines item and member data to represent what is owed and by who
 class Loan
   attr_reader :item, :member, :id
 
@@ -94,13 +96,14 @@ class Loan
     @id = SecureRandom.uuid
   end
 
+  # we define how we want our loan object to be displayed when printed to the terminal
   def to_s
     "Loan ID: #{@id}, title: #{@item.title}, due date: #{@item.due_date}"
   end
 end
 
 class BorrowingService
-  MAX_LOAN_LIMIT = 15
+  MAX_LOAN_LIMIT = 15 # member can have maximum 15 items on loan at a time
   
   def self.borrow_item(item:, member:)
     ensure_loan_limit_not_exceeded(member: member)
@@ -125,4 +128,5 @@ class BorrowingService
     end
   end
 end
+
 
