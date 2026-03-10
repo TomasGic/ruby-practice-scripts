@@ -4,11 +4,13 @@ class AccountOwner
   def initialize(first_name: , last_name:)
     @first_name = first_name
     @last_name = last_name
-    @full_name = first_name + " " + last_name
+    @full_name = "#{first_name} #{last_name}"
   end
 end
 
 class BankAccount
+  WITHDRAWAL_LIMIT = 500
+  
   attr_reader :owner, :balance
   def initialize(owner:, balance:)
     @owner = owner
@@ -22,23 +24,25 @@ class BankAccount
   end
   
   def deposit_amount(amount)
+    raise ArgumentError, "Deposit must be positive" if amount <= 0
     @balance += amount
   end
 
   def withdraw_amount(amount)
-    raise RuntimeError, "Account cannot go into overdraft" if is_overdrawn?(amount)
-    raise RuntimeError, "Cannot withdraw more than 500" if withdrawal_greater_than_500?(amount)
+    # note: when account is in overdraft/overdrawn it has a negative balance
+    raise RuntimeError, "Account cannot go into overdraft" if overdrawn?(amount)
+    raise RuntimeError, "Cannot withdraw more than #{WITHDRAWAL_LIMIT}" if withdrawal_exceeds_limit?(amount)
     @balance -= amount
   end
 
   private 
 
-  def is_overdrawn?(withdrawal_amount)
+  def overdrawn?(withdrawal_amount)
     withdrawal_amount > @balance 
   end
 
-  def withdrawal_greater_than_500?(withdrawal_amount)
-    withdrawal_amount > 500
+  def withdrawal_exceeds_limit?(withdrawal_amount)
+    withdrawal_amount > WITHDRAWAL_LIMIT
   end
 
   def validate_initial_balance!(balance)
@@ -54,7 +58,7 @@ class CreditCard
     @owner = owner
     @account = account
     @limit = limit
-    @balance = 0
+    @balance = 0.0 
   end
 
   def display_balance
@@ -62,10 +66,12 @@ class CreditCard
   end
   
   def charge(amount)
+    # verify that amount the card is charged with does not exceed limit and is not negative
     validate_transaction(amount)
     @balance += amount
   end
 
+  # credit card holder can make payment from his primary account to reduce debt
   def make_payment(account:, amount:)
     account.withdraw_amount(amount)
     @balance -= amount

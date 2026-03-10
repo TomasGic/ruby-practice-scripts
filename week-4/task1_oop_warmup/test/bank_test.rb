@@ -13,7 +13,7 @@ class BankAccountTest < Minitest::Test
   end
 
   def test_account_has_initial_balance 
-    assert_equal 2_000, @account.balance
+    assert_equal 2000, @account.balance
   end
 
   def test_account_cannot_initialize_with_negative_balance
@@ -22,19 +22,19 @@ class BankAccountTest < Minitest::Test
 
   def test_deposit_increases_balance
     @account.deposit_amount(200)
-    assert_equal 2_200, @account.balance
+    assert_equal 2200, @account.balance
   end
 
   def test_withdraw_decreases_balance
     @account.withdraw_amount(200)
-    assert_equal 1_800, @account.balance
+    assert_equal 1800, @account.balance
   end
 
   def test_account_cannot_overdraw
-    assert_raises(RuntimeError) { @account.withdraw_amount(3_000)}
+    assert_raises(RuntimeError) { @account.withdraw_amount(3000)}
   end
 
-  def test_cannot_withdraw_more_than_500
+  def test_cannot_withdraw_more_than_limit
     assert_raises(RuntimeError) { @account.withdraw_amount(550) }
   end
 
@@ -47,8 +47,8 @@ end
 class CreditCardTest < Minitest::Test
   def setup
     @owner = AccountOwner.new(first_name: "Tomas", last_name: "Gic")
-    @account = BankAccount.new(owner: @owner, balance: 3_000)
-    @credit_card = CreditCard.new(owner: @owner, account: @account, limit: 2_500)
+    @account = BankAccount.new(owner: @owner, balance: 3000)
+    @credit_card = CreditCard.new(owner: @owner, account: @account, limit: 2500)
   end
 
   def test_card_initializes_with_0_balance
