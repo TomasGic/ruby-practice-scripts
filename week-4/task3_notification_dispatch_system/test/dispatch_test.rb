@@ -73,6 +73,7 @@ class DispatcherTest < Minitest::Test
     record = dispatcher.logs.last
     assert_equal :failed, record.status
     assert_equal "Delivery failed", record.error_message
+    @mock_email.verify
   end
 
   def test_error_is_raised_when_notification_is_dispatched_with_empty_message
