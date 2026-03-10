@@ -10,13 +10,13 @@ class Dispatcher
     if channel
       begin
         if notification.message.nil? || notification.message.strip.empty?
-          raise StandardError, "Message cannot be empty"
+          raise EmptyMessageError, "Message cannot be empty"
         else
           success_message = channel.send(notification)
           record_delivery(notification: notification, status: :success, error_message: nil)
           success_message
         end
-      rescue StandardError => e
+      rescue => e
         record_delivery(notification: notification, status: :failed, error_message: e.message)
         raise e
       end
@@ -110,6 +110,7 @@ end
 class UnsupportedNotificationError < StandardError; end
 class InvalidRecipientError < StandardError; end
 class MessageTooLongError < StandardError; end
+class EmptyMessageError < StandardError; end
 
 
 

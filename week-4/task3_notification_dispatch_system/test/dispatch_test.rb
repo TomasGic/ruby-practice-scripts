@@ -64,21 +64,22 @@ class DispatcherTest < Minitest::Test
   def test_dispatcher_records_failed_email_delivery
     dispatcher = Dispatcher.new(channels: [@mock_email])
     @mock_email.expect :supports?, true, [@email_notification]
-    @mock_email.expect :send, nil, [] do |n|
+    @mock_email.expect :send, nil do |n|
       assert_equal @email_notification, n
       raise "Delivery failed"
     end
-
-    error = assert_raises(RuntimeError) { dispatcher.dispatch(@email_notification) }
-    assert_equal "Delivery failed", error.message
-    assert_equal 1, dispatcher.logs.size
+    
+    assert_raises(RuntimeError) { dispatcher.dispatch(@email_notification) }
+    record = dispatcher.logs.last
+    assert_equal :failed, record.status
+    assert_equal "Delivery failed", record.error_message
   end
 
   def test_error_is_raised_when_notification_is_dispatched_with_empty_message
     notification = Notification.new(recipient: "+31625888999", message: "", type: :sms)
     dispatcher = Dispatcher.new(channels: [@mock_sms])
     @mock_sms.expect :supports?, true, [notification]
-    error = assert_raises(StandardError) { dispatcher.dispatch(notification) }
+    error = assert_raises(EmptyMessageError) { dispatcher.dispatch(notification) }
     assert_equal "Message cannot be empty", error.message
     @mock_sms.verify
   end
