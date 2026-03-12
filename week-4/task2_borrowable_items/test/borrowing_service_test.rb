@@ -89,13 +89,15 @@ class BorrowingServiceTest < Minitest::Test
   end
   
   def test_borrowing_adds_loan_object_to_active_loans
-    assert_includes @member.active_loans, @book_loan, @dvd_loan
+    assert_includes @member.active_loans, @book_loan
+    assert_includes @member.active_loans, @dvd_loan
   end
 
   def test_returning_removes_loan_object_from_active_loans
     BorrowingService.return_item(@book_loan)
     BorrowingService.return_item(@dvd_loan)
-    refute_includes @member.active_loans, @book_loan, @dvd_loan
+    refute_includes @member.active_loans, @book_loan
+    refute_includes @member.active_loans, @dvd_loan
   end
 
   def test_returning_makes_item_available_again_and_resets_due_date
