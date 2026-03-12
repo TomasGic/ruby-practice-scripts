@@ -36,7 +36,7 @@ class BankAccountTest < Minitest::Test
   end
 
   def test_cannot_withdraw_more_than_withdrawal_limit
-    error = assert_raises() { @account.withdraw_amount(550) }
+    error = assert_raises(WithdrawalLimitError) { @account.withdraw_amount(550) }
     assert_equal "Cannot withdraw more than 500", error.message
   end
 
@@ -76,6 +76,12 @@ class CreditCardTest < Minitest::Test
 
   def test_user_can_display_credit_card_balance
     assert_output("Current balance is $0.00.\n") { @credit_card.display_balance }
+  end
+
+  def test_payment_from_checking_account_cannot_exceed_card_balance
+    @credit_card.charge(500)
+    error = assert_raises(ArgumentError) { @credit_card.make_payment(amount: 600) }
+    assert_equal "Payment cannot be higher than current balance", error.message
   end
 end
 

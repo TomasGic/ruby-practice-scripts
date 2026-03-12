@@ -79,6 +79,7 @@ class CreditCard
 
   # credit card holder can make payment from his linked account to reduce debt
   def make_payment(amount:)
+    raise ArgumentError, "Payment cannot be higher than current balance" if @balance - amount < 0
     @account.withdraw_amount(amount)
     @balance -= amount
   end
