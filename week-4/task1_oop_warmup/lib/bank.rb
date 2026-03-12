@@ -24,11 +24,12 @@ class BankAccount
   end
   
   def deposit_amount(amount)
-    raise ArgumentError, "Deposit must be positive" if amount <= 0
+    validate_amount(amount)
     @balance += amount
   end
 
   def withdraw_amount(amount)
+    validate_amount(amount)
     # note: when account is in overdraft/overdrawn it has a negative balance
     raise OverdraftError, "Account cannot go into overdraft" if overdrawn?(amount)
     raise WithdrawalLimitError, "Cannot withdraw more than #{WITHDRAWAL_LIMIT}" if withdrawal_exceeds_limit?(amount)
@@ -48,6 +49,10 @@ class BankAccount
   def validate_initial_balance!(balance)
     raise ArgumentError, "Balance has to be a number" unless balance.is_a?(Numeric)
     raise ArgumentError, "Initial balance cannot be negative" if balance < 0
+  end
+
+  def validate_amount(amount)
+    raise ArgumentError, "Amount has to a positive number" unless amount.is_a?(Numeric) && amount > 0
   end
 end
 
