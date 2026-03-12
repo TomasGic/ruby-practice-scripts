@@ -17,6 +17,7 @@ class BookTest < Minitest::Test
   end
 
   def test_returning_makes_book_available
+    @book.borrow
     @book.return
     assert @book.available?
   end
@@ -24,12 +25,13 @@ class BookTest < Minitest::Test
     @book.borrow
     assert_equal Date.today + 21, @book.due_date
     @book.return
-    assert_equal nil, @book.due_date
+    assert_nil(@book.due_date)
   end
 
   def test_borrowing_unavailable_book_raises_error
     @book.borrow
-    assert_raises(RuntimeError) { @book.borrow }
+    error = assert_raises(ItemNotAvailableError) { @book.borrow }
+    assert_equal "Item is not available", error.message
   end
 end
 
@@ -54,6 +56,7 @@ class MemberTest < Minitest::Test
   end
 
   def test_viewing_active_loans
+    @book.borrow
     @member.register_loan(@loan)
     due_date = (Date.today + 21).to_s
     output = ["Loan ID: #{@loan.id}, title: #{@book.title}, due date: #{due_date}"]
@@ -112,7 +115,7 @@ class BorrowingServiceTest < Minitest::Test
     end
     extra_book = Book.new(author: "Robert C. Martin", title: "Clean Architecture")
     
-    assert_raises(RuntimeError) { BorrowingService.borrow_item(item: extra_book, member: @member) }
-    
+    error = assert_raises(ActiveLoansLimitError) { BorrowingService.borrow_item(item: extra_book, member: @member) }
+    assert_equal "Cannot have more than 15 items on loan", error.message
   end
 end

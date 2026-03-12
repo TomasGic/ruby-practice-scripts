@@ -29,7 +29,7 @@ class Item
   private
 
   def ensure_available
-    raise RuntimeError, "Item is on loan" unless @available
+    raise ItemNotAvailableError, "Item is not available" unless @available
   end
 end
 
@@ -63,6 +63,8 @@ end
 class Member
   attr_reader :full_name, :active_loans
   def initialize(first_name:, last_name:)
+    @first_name = first_name
+    @last_name = last_name
     @full_name = "#{@first_name} #{@last_name}"
     @id = SecureRandom.uuid
     @active_loans = []
@@ -76,7 +78,7 @@ class Member
     if @active_loans.empty?
       "No active loans"
     else 
-      @active_loans.map { |loan| p loan.to_s}
+      @active_loans.map { |loan| loan.to_s}
     end
     
   end
@@ -107,8 +109,8 @@ class BorrowingService
   
   def self.borrow_item(item:, member:)
     ensure_loan_limit_not_exceeded(member: member)
-    loan = Loan.new(item: item, member: member)
     item.borrow
+    loan = Loan.new(item: item, member: member)
     member.register_loan(loan)
     loan
   end
@@ -124,9 +126,11 @@ class BorrowingService
 
   def self.ensure_loan_limit_not_exceeded(member:)
     if member.active_loans.size >= MAX_LOAN_LIMIT
-      raise RuntimeError, "Cannot have more than #{MAX_LOAN_LIMIT} items on loan"
+      raise ActiveLoansLimitError, "Cannot have more than #{MAX_LOAN_LIMIT} items on loan"
     end
   end
 end
 
+class ActiveLoansLimitError < StandardError; end
+class ItemNotAvailableError < StandardError; end
 
