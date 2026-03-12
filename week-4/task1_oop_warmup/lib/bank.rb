@@ -30,8 +30,8 @@ class BankAccount
 
   def withdraw_amount(amount)
     # note: when account is in overdraft/overdrawn it has a negative balance
-    raise RuntimeError, "Account cannot go into overdraft" if overdrawn?(amount)
-    raise RuntimeError, "Cannot withdraw more than #{WITHDRAWAL_LIMIT}" if withdrawal_exceeds_limit?(amount)
+    raise OverdraftError, "Account cannot go into overdraft" if overdrawn?(amount)
+    raise WithdrawalLimitError, "Cannot withdraw more than #{WITHDRAWAL_LIMIT}" if withdrawal_exceeds_limit?(amount)
     @balance -= amount
   end
 
@@ -72,17 +72,20 @@ class CreditCard
     @balance += amount
   end
 
-  # credit card holder can make payment from his primary account to reduce debt
-  def make_payment(account:, amount:)
-    account.withdraw_amount(amount)
+  # credit card holder can make payment from his linked account to reduce debt
+  def make_payment(amount:)
+    @account.withdraw_amount(amount)
     @balance -= amount
   end
 
   private
 
   def validate_transaction(amount)
-    raise RuntimeError, "Transaction declined. Card limit exceeded!" if amount + @balance > @limit
-    raise RuntimeError, "Card cannot be charged with negative amount or 0" if amount <= 0
+    raise CreditCardLimitError, "Transaction declined. Card limit exceeded!" if amount + @balance > @limit
+    raise ArgumentError, "Card cannot be charged with negative amount or 0" if amount <= 0
   end
 end
 
+class OverdraftError < StandardError; end
+class WithdrawalLimitError < StandardError; end
+class CreditCardLimitError < StandardError; end

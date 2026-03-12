@@ -31,11 +31,13 @@ class BankAccountTest < Minitest::Test
   end
 
   def test_account_cannot_overdraw
-    assert_raises(RuntimeError) { @account.withdraw_amount(3000)}
+    error = assert_raises(OverdraftError) { @account.withdraw_amount(3000) }
+    assert_equal "Account cannot go into overdraft", error.message
   end
 
-  def test_cannot_withdraw_more_than_limit
-    assert_raises(RuntimeError) { @account.withdraw_amount(550) }
+  def test_cannot_withdraw_more_than_withdrawal_limit
+    error = assert_raises() { @account.withdraw_amount(550) }
+    assert_equal "Cannot withdraw more than 500", error.message
   end
 
   def test_user_can_view_balance
@@ -59,16 +61,17 @@ class CreditCardTest < Minitest::Test
     assert_equal 200, @credit_card.charge(200)
   end
 
-  def test_user_can_make_payment_from_checking_account
+  def test_user_can_make_payment_from_linked_checking_account
     @credit_card.charge(200)
-    @credit_card.make_payment(account: @account, amount: 200)
+    @credit_card.make_payment(amount: 200)
     assert_equal 2800, @account.balance
     assert_equal 0, @credit_card.balance
   end
 
   def test_card_balance_cannot_exceed_limit
     @credit_card.charge(2000)
-    assert_raises(RuntimeError) { @credit_card.charge(600) }
+    error = assert_raises(CreditCardLimitError) { @credit_card.charge(600) }
+    assert_equal "Transaction declined. Card limit exceeded!", error.message
   end
 
   def test_user_can_display_credit_card_balance
