@@ -46,7 +46,8 @@ class BankAccount
   end
 
   def validate_initial_balance!(balance)
-    raise ArgumentError, "Initial balance cannot be negative" if balance.to_f < 0
+    raise ArgumentError, "Balance has to be a number" unless balance.is_a?(Numeric)
+    raise ArgumentError, "Initial balance cannot be negative" if balance < 0
   end
 end
 
