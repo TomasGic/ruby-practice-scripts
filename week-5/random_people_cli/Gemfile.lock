@@ -15,6 +15,11 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.13.0)
     rspec-support (3.13.7)
+    terminal-table (4.0.0)
+      unicode-display_width (>= 1.1.1, < 4)
+    unicode-display_width (3.2.0)
+      unicode-emoji (~> 4.1)
+    unicode-emoji (4.2.0)
 
 PLATFORMS
   ruby
@@ -22,6 +27,7 @@ PLATFORMS
 
 DEPENDENCIES
   rspec
+  terminal-table
 
 BUNDLED WITH
    2.6.9
