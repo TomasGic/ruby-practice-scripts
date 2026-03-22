@@ -4,3 +4,6 @@ end
 
 require "random_people/user"
 require "random_people/user_mapper"
+require "random_people/clients/random_user_client"
+require "random_people/http/net_http_adapter"
+require "random_people/http/response"
