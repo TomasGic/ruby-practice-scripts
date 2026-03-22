@@ -29,5 +29,3 @@ RSpec.describe RandomPeople::User do
     expect(user2.group).to eq("minor")
   end
 end
-
-# Testing the UserMapper class
