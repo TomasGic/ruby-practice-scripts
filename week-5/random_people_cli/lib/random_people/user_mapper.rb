@@ -5,7 +5,8 @@ module RandomPeople
         first_name: raw.dig("name", "first"),
         last_name: raw.dig("name", "last"),
         age: raw.dig("dob", "age"),
-        country: raw.dig("location", "country")
+        country: raw.dig("location", "country"),
+        email: raw["email"]
       )
     end
   end
