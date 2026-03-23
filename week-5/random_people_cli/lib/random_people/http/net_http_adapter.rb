@@ -1,4 +1,5 @@
 class FakeHttp
+  attr_reader :seen_urls
   def initialize(status:, body:)
     @status = status
     @body = body

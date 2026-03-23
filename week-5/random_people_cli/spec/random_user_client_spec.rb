@@ -8,8 +8,25 @@ RSpec.describe RandomPeople::Clients::RandomUserClient do
     http = FakeHttp.new(status: 200, body: json)
     client = described_class.new(http: http)
     payload = client.fetch(count: 1)
-    puts payload["results"].class
+    
     expect(payload["results"].length).to eq(1)
+    expect(payload["results"].first["name"]["first"]).to eq("Jennie")
+    expect(payload["results"].first["name"]["last"]).to eq("Nichols")
+    expect(http.seen_urls.first).to include("results=1")
+  end
+
+  it "raises api error when response code is 500 (server error)" do
+    http = FakeHttp.new(status: 500, body: "oops")
+    client = described_class.new(http: http)
+
+    expect { client.fetch(count: 1) }.to raise_error("api error")
+  end
+
+  it "raises json parser error when json is invalid" do
+    http = FakeHttp.new(status: 200, body: "not json}")
+    client = described_class.new(http: http)
+
+    expect { client.fetch(count: 1) }.to raise_error(JSON::ParserError)
   end
 
   

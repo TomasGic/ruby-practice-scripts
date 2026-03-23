@@ -12,6 +12,8 @@ module RandomPeople
       def fetch(count:)
         url = "#{BASE_URL}/?results=#{count}"
         res = @http.get(url, headers: { "Accept" => "application/json" })
+
+        raise "api error" unless res.success?
         JSON.parse(res.body)
       end
     end
