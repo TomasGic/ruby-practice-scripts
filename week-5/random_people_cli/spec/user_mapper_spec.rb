@@ -1,4 +1,3 @@
-require_relative "spec_helper"
 require "json"
 # rspec spec/user_mapper_spec.rb
 

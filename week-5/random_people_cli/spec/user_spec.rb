@@ -1,4 +1,3 @@
-require_relative "spec_helper"
 # rspec spec/user_spec.rb
 
 #Testing the User class
@@ -8,7 +7,8 @@ RSpec.describe RandomPeople::User do
       first_name: "Tomas",
       last_name: "Gic",
       age: 34,
-      country: "Slovakia"
+      country: "Slovakia",
+      email: "example@gmail.com"
     )
   end
   
@@ -17,7 +17,8 @@ RSpec.describe RandomPeople::User do
       first_name: "Thomas",
       last_name: "Gic",
       age: 17,
-      country: "Slovakia"
+      country: "Slovakia",
+      email: "example@gmail.com"
     )
   end
 
@@ -26,7 +27,8 @@ RSpec.describe RandomPeople::User do
       first_name: "mary-ann",
       last_name: "gic ",
       age: "34",
-      country: "slovakia"
+      country: "slovakia",
+      email: "example@gmail.com"
     )
   end
   it "initalizes with full name attribute" do 
@@ -53,7 +55,8 @@ RSpec.describe RandomPeople::User do
         first_name: "",
         last_name: "gic ",
         age: "34",
-        country: "slovakia"
+        country: "slovakia",
+        email: "example@gmail.com"
       )
   }.to raise_error(RuntimeError, "first_name required")
   end    

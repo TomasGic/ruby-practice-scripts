@@ -1,4 +1,3 @@
-require_relative "spec_helper"
 require "json"
 # rspec spec/random_user_client_spec.rb
 RSpec.describe RandomPeople::Clients::RandomUserClient do

@@ -70,13 +70,13 @@ RSpec.describe RandomPeople::Formatters::JsonFormatter do
   describe "#format" do
     it "returns a valid JSON string" do
       json_formatter = described_class.new(users)
-      output = json_formatter.format # this should return a json string
-      parsed_output = JSON.parse(output) # this should return a hash
+      users_json = json_formatter.format # this should return a json string
+      users_hash = JSON.parse(users_json) # this should return a ruby hash
 
-      expect(parsed_output.first["full_name"]).to eq("Tomas Gic")
-      expect(parsed_output.first["group"]).to eq("adult")
-      expect(parsed_output.last["full_name"]).to eq("Lukas Rohac")
-      expect(parsed_output.last["group"]).to eq("minor")
+      expect(users_hash.first["full_name"]).to eq("Tomas Gic")
+      expect(users_hash.first["group"]).to eq("adult")
+      expect(users_hash.last["full_name"]).to eq("Lukas Rohac")
+      expect(users_hash.last["group"]).to eq("minor")
     end
   end
   
