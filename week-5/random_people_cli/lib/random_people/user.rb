@@ -1,18 +1,14 @@
 module RandomPeople
   class User
-    attr_reader :first_name, :last_name, :full_name, :age, :group, :country, :email
+    attr_reader :first_name, :last_name, :age, :group, :country, :email
     def initialize(first_name:, last_name:, age:, country:, email:)
-      @first_name = normalize(first_name)
-      @last_name = normalize(last_name)
-      @age = Integer(age)
-      @group = self.adult? ? "adult" : "minor"
-      @country = normalize(country)
-      @email = email.nil? ? nil : String(email).strip.downcase
-      validate!
-    end
-
-    def full_name
-      "#{@first_name} #{@last_name}"
+      @first_name = normalize(first_name, "N/A")
+      @last_name = normalize(last_name, "N/A")
+      @age = parse_age(age)
+      @group = get_group
+      @country = normalize(country, "N/A")
+      @email = email.nil? ? "N/A" : String(email).strip.downcase
+      
     end
 
     def adult?
@@ -21,7 +17,8 @@ module RandomPeople
 
     def to_h
       {
-        full_name: self.full_name,
+        first_name: @first_name,
+        last_name: @last_name,
         email: @email,
         country: @country,
         age: @age,
@@ -30,15 +27,30 @@ module RandomPeople
     end
 
     private
-    def normalize(string)
-      String(string).strip.gsub(/\b\w/) { |char| char.upcase }
+    def normalize(string, default_value)
+      value = String(string).strip
+      value.empty? || value.nil? ? default_value : value.gsub(/\b\w/) { |char| char.upcase }
     end
 
-    def validate!
-      raise "first_name required" if first_name.empty?
-      raise "last_name required" if last_name.empty?
-      raise "country required" if country.empty?
-      raise "age must be >= 0" if age < 0
+    def parse_age(age)
+      return "Invalid" if age.nil? || age.to_s.strip.empty?
+      value = age.to_i
+      value > 0 ? value : "Invalid"
+    end
+
+    def get_group
+      return "N/A" if @age == "Invalid"
+      @age >=18 ? "adult" : "minor"
     end
   end
 end
+
+user1 = RandomPeople::User.new(
+  first_name: nil,
+  last_name: nil,
+  age: 34,
+  country: nil,
+  email: nil
+)
+
+p user1.to_h
