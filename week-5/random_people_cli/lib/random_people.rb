@@ -1,5 +1,5 @@
 module RandomPeople
-  
+  class UnsupportedFormatError < StandardError; end
 end
 
 require "random_people/user"
@@ -10,3 +10,4 @@ require "random_people/http/response"
 require "random_people/formatters/table_formatter"
 require "random_people/formatters/json_formatter"
 require "random_people/people_service"
+require "random_people/cli"
