@@ -8,7 +8,7 @@ RSpec.describe RandomPeople::UserMapper do
 
   describe ".map_data" do 
     it "transforms user hash fetched from api into a user object" do
-      user = described_class.map_data(user_hash)
+      user = described_class.new.map_data(user_hash)
       expect(user).to be_a(RandomPeople::User)
       expect(user.first_name).to eq(user_hash.dig("name", "first"))
       expect(user.last_name).to eq(user_hash.dig("name", "last"))

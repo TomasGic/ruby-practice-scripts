@@ -44,13 +44,3 @@ module RandomPeople
     end
   end
 end
-
-user1 = RandomPeople::User.new(
-  first_name: nil,
-  last_name: nil,
-  age: 34,
-  country: nil,
-  email: nil
-)
-
-p user1.to_h

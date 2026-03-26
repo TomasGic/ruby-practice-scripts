@@ -1,8 +1,6 @@
 require "optparse"
 
 module RandomPeople
-  
-  
   class Cli 
     def initialize(service:)
       @service = service
@@ -12,7 +10,7 @@ module RandomPeople
       options = parse_options(args)
       formatter = choose_formatter(options)
       users = @service.execute(count: options[:count])
-      formatter.format(users)
+      puts formatter.format(users)
     end
 
     private 

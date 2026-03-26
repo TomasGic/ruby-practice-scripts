@@ -1,0 +1,15 @@
+#!/usr/bin/env ruby
+
+lib_path = File.expand_path('../lib', __dir__)
+$LOAD_PATH.unshift(lib_path) unless $LOAD_PATH.include?(lib_path)
+
+require "random_people"
+
+http_adapter = RandomPeople::HTTP::RealHttp.new 
+client = RandomPeople::Clients::RandomUserClient.new(http: http_adapter)
+mapper = RandomPeople::UserMapper.new
+service = RandomPeople::PeopleService.new(client: client, mapper: mapper)
+cli = RandomPeople::Cli.new(service: service)
+
+cli.run(ARGV)
+
