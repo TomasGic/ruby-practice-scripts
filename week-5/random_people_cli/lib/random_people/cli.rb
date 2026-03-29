@@ -8,9 +8,14 @@ module RandomPeople
 
     def run(args)
       options = parse_options(args)
-      formatter = choose_formatter(options)
       users = @service.execute(count: options[:count])
-      puts formatter.format(users)
+      if users.empty?
+        puts "No users found"
+        return
+      else 
+        formatter = choose_formatter(options)
+        puts formatter.format(users)
+      end
     end
 
     private 

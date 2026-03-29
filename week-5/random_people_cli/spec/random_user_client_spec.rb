@@ -14,18 +14,18 @@ RSpec.describe RandomPeople::Clients::RandomUserClient do
     expect(http.seen_urls.first).to include("results=1")
   end
 
-  it "raises api error when response code is 500 (server error)" do
+  it "raises custom api error when response code is 500 (server error)" do
     http = RandomPeople::HTTP::FakeHttp.new(status: 500, body: "oops")
     client = described_class.new(http: http)
 
-    expect { client.fetch(count: 1) }.to raise_error("api error")
+    expect { client.fetch(count: 1) }.to raise_error(RandomPeople::ApiError, /API request failed with status 500: oops/)
   end
 
-  it "raises json parser error when json is invalid" do
-    http = RandomPeople::HTTP::FakeHttp.new(status: 200, body: "not json}")
+  it "raises custom api error when json is invalid" do
+    http = RandomPeople::HTTP::FakeHttp.new(status: 200, body: "invalid json}")
     client = described_class.new(http: http)
 
-    expect { client.fetch(count: 1) }.to raise_error(JSON::ParserError)
+    expect { client.fetch(count: 1) }.to raise_error(RandomPeople::ApiError, /API returned invalid JSON/)
   end
 
   

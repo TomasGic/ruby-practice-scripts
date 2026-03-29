@@ -48,7 +48,7 @@ RSpec.describe RandomPeople::Cli do
     end
 
     it "raises custom error when unsupported format type is passed" do
-      expect(service).not_to receive(:execute)
+      allow(service).to receive(:execute).and_return(users)
       expect {
         cli.run(["--format", "csv"])
     }.to raise_error(RandomPeople::UnsupportedFormatError, /Format csv is not supported/)
@@ -74,7 +74,17 @@ RSpec.describe RandomPeople::Cli do
       expect(service).not_to receive(:execute)
       
       expect {
-        cli.run(["--count", "4", "format", "json"])
+        cli.run(["--count", "4", "format", "json"])#user typed format instead of --format
       }.to raise_error(OptionParser::InvalidArgument, /Unrecognized arguments: format, json. Did you forget --?/)
+    end
+
+    it "displays 'no users found' when users array is empty" do
+      allow(service).to receive(:execute).with(count: 5).and_return([])
+      expect { 
+        cli.run(["--count", "5"]) 
+      }.to output(/No users found/).to_stdout
+      
+      cli.run(["--count", "5"])
+
     end
 end

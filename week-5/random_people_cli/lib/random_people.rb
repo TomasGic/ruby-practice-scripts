@@ -1,5 +1,6 @@
 module RandomPeople
   class UnsupportedFormatError < StandardError; end
+  class ApiError < StandardError; end
 end
 
 require "random_people/user"
