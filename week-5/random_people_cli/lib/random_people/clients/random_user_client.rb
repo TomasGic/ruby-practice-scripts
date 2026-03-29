@@ -3,7 +3,7 @@ require "json"
 module RandomPeople
   module Clients
     class RandomUserClient
-      BASE_URL = "https://randomuser.me/api/"
+      BASE_URL = "https://randomuser.me/api"
       
       def initialize(http:)
         @http = http

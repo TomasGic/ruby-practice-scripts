@@ -15,18 +15,27 @@ module RandomPeople
 
     private 
     def parse_options(args)
-      options = { count: 5, format: "table"} # default value
+      options = { count: 5, format: "table"} # default values
 
-      OptionParser.new do |opts|
-        opts.on("--count N", "Number of users to fetch") do |n|
-          options[:count] = n.to_i
+      parser = OptionParser.new do |opts|
+        opts.on("--count N", Integer, "Number of users to fetch") do |n|
+          if n <= 0
+            raise OptionParser::InvalidArgument, "Count must be a positive number!"
+          else 
+            options[:count] = n
+          end
         end
 
         opts.on("--format F", "Output format (table, json)") do |f|
           options[:format] = f.downcase
         end
-      end.parse!(args)
-      return options
+      end
+      parser.parse!(args)
+      
+      if args.any?
+        raise OptionParser::InvalidArgument, "Unrecognized arguments: #{args.join(", ")}. Did you forget --?"
+      end
+      options
     end
 
     def choose_formatter(options)
