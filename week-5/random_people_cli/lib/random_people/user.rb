@@ -15,10 +15,13 @@ module RandomPeople
       @age >= 18
     end
 
+    def full_name
+      "#{@first_name} #{@last_name}"
+    end
+
     def to_h
       {
-        first_name: @first_name,
-        last_name: @last_name,
+        full_name: self.full_name,
         email: @email,
         country: @country,
         age: @age,

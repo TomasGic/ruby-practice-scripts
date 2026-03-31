@@ -52,6 +52,10 @@ RSpec.describe RandomPeople::User do
     )
   end
 
+  it "outputs full name from first name and last name" do
+    expect(user_adult.full_name).to eq("Tomas Gic")
+  end
+
   it "outputs adult category for users aged 18 and above" do
     expect(user_adult.group).to eq("adult")
   end

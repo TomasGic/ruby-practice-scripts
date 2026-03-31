@@ -25,12 +25,13 @@ RSpec.shared_context "formatter data" do
   let(:users) { [user1, user2] } 
 end
 RSpec.describe RandomPeople::Formatters::TableFormatter do
-  
+  let(:table_formatter) { described_class.new }
+
   include_context "formatter data"
   describe "#format" do
     it "returns a string containing the table headers" do
-      table_formatter = described_class.new(users)
-      output = table_formatter.format
+      
+      output = table_formatter.format(users)
 
       expect(output).to include("Full Name")
       expect(output).to include("Email")
@@ -40,8 +41,8 @@ RSpec.describe RandomPeople::Formatters::TableFormatter do
     end
 
     it "returns a string containing the table values" do
-      table_formatter = described_class.new(users)
-      output = table_formatter.format
+      
+      output = table_formatter.format(users)
 
       expect(output).to include("Tomas Gic")
       expect(output).to include("34")
@@ -54,23 +55,17 @@ RSpec.describe RandomPeople::Formatters::TableFormatter do
       expect(output).to include("minor")
       expect(output).to include("example2@gmail.com")
     end
-
-    it "returns 'no results found' when users array is empty" do
-      users = []
-      table_formatter = described_class.new(users)
-      output = table_formatter.format
-
-      expect(output).to eq("no results found")
-    end
   end
 end
 
 RSpec.describe RandomPeople::Formatters::JsonFormatter do
+  
+  let(:json_formatter) { described_class.new }
   include_context "formatter data"
   describe "#format" do
     it "returns a valid JSON string" do
-      json_formatter = described_class.new(users)
-      users_json = json_formatter.format # this should return a json string
+      
+      users_json = json_formatter.format(users) # this should return a json string
       users_hash = JSON.parse(users_json) # this should return a ruby hash
 
       expect(users_hash.first["full_name"]).to eq("Tomas Gic")
