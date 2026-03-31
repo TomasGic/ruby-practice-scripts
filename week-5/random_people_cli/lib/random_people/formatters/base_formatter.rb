@@ -5,10 +5,12 @@ url = URI("https://randomuser.me/api/?results=3")
 res = Net::HTTP.get(url)
 data = JSON.parse(res)
 
-data["results"].each do |user|
-  puts user.dig("name", "first")
-  puts user.dig("dob", "age")
-  puts user.dig("location", "country")
-  puts "------------------------------"
+users = data["results"]
+
+users_filtered = users.map do |user|
+  { "first_name" => user.dig("name", "first") }
 end
+
+p users_filtered.sort_by { |u| u["first_name"] }
+
 

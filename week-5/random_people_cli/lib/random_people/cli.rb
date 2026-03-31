@@ -2,6 +2,9 @@ require "optparse"
 
 module RandomPeople
   class Cli 
+
+    SORT_FIELD_MAPPINGS = { "name" => :full_name, "age" => :age }
+    
     def initialize(service:)
       @service = service
     end
@@ -9,18 +12,33 @@ module RandomPeople
     def run(args)
       options = parse_options(args)
       users = @service.execute(count: options[:count])
+
+      if options[:country] && !users.empty?
+        users = users.select do |user| 
+          user.country.upcase == options[:country].strip.upcase
+        end 
+      end
+      
+      if options[:sort] && !users.empty?
+        sorting_attribute = SORT_FIELD_MAPPINGS[options[:sort]]
+        if sorting_attribute
+          users = sort_array(arr: users, by: sorting_attribute)
+        else 
+          raise OptionParser::InvalidArgument, "Invalid sort field '#{sorting_attribute}'."
+        end
+      end
+
       if users.empty?
         puts "No users found"
         return
-      else 
-        formatter = choose_formatter(options)
-        puts formatter.format(users)
       end
+      formatter = choose_formatter(options)
+      puts formatter.format(users)
     end
 
     private 
     def parse_options(args)
-      options = { count: 5, format: "table"} # default values
+      options = { count: 5, format: "table", sort: nil, country: nil} # default values
 
       parser = OptionParser.new do |opts|
         opts.on("--count N", Integer, "Number of users to fetch") do |n|
@@ -33,6 +51,14 @@ module RandomPeople
 
         opts.on("--format F", "Output format (table, json)") do |f|
           options[:format] = f.downcase
+        end
+
+        opts.on("--sort S", "Field to sort by") do |s|
+          options[:sort] = s.downcase
+        end
+
+        opts.on("--country C", "Filter by country name") do |c|
+          options[:country] = c.upcase
         end
       end
       parser.parse!(args)
@@ -52,5 +78,11 @@ module RandomPeople
         raise UnsupportedFormatError, "Format #{options[:format]} is not supported"
       end
     end
+
+    def sort_array(arr:, by:)
+      arr.sort_by { |arr_element| arr_element.send(by) }
+    end
+
+    
   end
 end

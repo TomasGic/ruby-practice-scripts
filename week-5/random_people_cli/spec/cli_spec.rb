@@ -84,7 +84,51 @@ RSpec.describe RandomPeople::Cli do
         cli.run(["--count", "5"]) 
       }.to output(/No users found/).to_stdout
       
-      cli.run(["--count", "5"])
+      # cli.run(["--count", "5"])
 
+    end
+
+    it "raises InvalidArgument error when user tries to sort by non-existent attribute" do
+      allow(service).to receive(:execute).with(count: 5).and_return(users)
+      expect { 
+        cli.run(["--count", "5", "--sort", "email"]) 
+      }.to raise_error(OptionParser::InvalidArgument)
+    end
+
+    describe "Filtering users by country name" do
+      let(:user_slovak) {
+        RandomPeople::User.new(
+          first_name: "Tomas", 
+          last_name: "Gic", 
+          email: "test@example.com",
+          age: 30,
+          country: "Slovakia"
+        )
+      }
+
+      let(:user_spain) {
+        RandomPeople::User.new(
+          first_name: "Ivan", 
+          last_name: "Gonzales", 
+          email: "test@example.com",
+          age: 30,
+          country: "Spain"
+        )
+      }
+      it "filters users by a specific country if provided as argument in the terminal" do
+        
+        allow(service).to receive(:execute).and_return([user_slovak, user_spain])
+        expect { cli.run(["--country", "spain "]) }
+          .to output(/Ivan/).to_stdout
+        
+        expect { cli.run(["--country", "spain"]) }
+          .not_to output(/Tomas/).to_stdout
+      end
+
+      it "displays no results found when there are no matches for the country provided" do
+        allow(service).to receive(:execute).and_return([user_slovak, user_spain])
+        expect { cli.run(["--country", "Netherlands"]) }
+          .to output(/No users found/).to_stdout
+      end
     end
 end
