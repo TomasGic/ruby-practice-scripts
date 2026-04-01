@@ -89,6 +89,15 @@ RSpec.describe RandomPeople::Cli do
       end
     end
 
+    it "exits with status 1 when count argument exceeds 1000" do
+      expect(service).not_to receive(:execute)
+      
+      expect { cli.run(["--count", "2000"]) }
+      .to raise_error(SystemExit) do |error|
+        expect(error.status).to eq(1)
+      end
+    end
+
     it "displays 'no users found' when users array is empty" do
       allow(service).to receive(:execute).with(count: 5).and_return([])
       expect { 

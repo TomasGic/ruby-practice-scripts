@@ -4,6 +4,7 @@ module RandomPeople
   class Cli 
 
     SORT_FIELD_MAPPINGS = { "name" => :full_name, "age" => :age }
+    MAX_NUM_USERS = 1000
     
     def initialize(service:)
       @service = service
@@ -54,7 +55,9 @@ module RandomPeople
         opts.on("--count N", Integer, "Number of users to fetch") do |n|
           if n <= 0
             raise OptionParser::InvalidArgument, "Count must be a positive number!"
-          else 
+          elsif n > MAX_NUM_USERS
+            raise OptionParser::InvalidArgument, "Can only fetch max #{MAX_NUM_USERS} users."
+          else
             options[:count] = n
           end
         end
