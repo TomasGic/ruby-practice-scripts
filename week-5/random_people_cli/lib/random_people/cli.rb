@@ -35,7 +35,7 @@ module RandomPeople
       formatter = choose_formatter(options)
       puts formatter.format(users)
     rescue OptionParser::ParseError, UnsupportedFormatError => e
-      abort("Usage error: #{e.message}")
+      abort("Usage error: #{e.message}\nTry 'bin/random_people --help' for more information")
       
     rescue ApiError => e
       abort("API Error: #{e.message}")
@@ -49,6 +49,8 @@ module RandomPeople
       options = { count: 5, format: "table", sort: nil, country: nil} # default values
 
       parser = OptionParser.new do |opts|
+        opts.banner = "Usage: random_people [options]"
+        
         opts.on("--count N", Integer, "Number of users to fetch") do |n|
           if n <= 0
             raise OptionParser::InvalidArgument, "Count must be a positive number!"
@@ -61,7 +63,7 @@ module RandomPeople
           options[:format] = f.downcase
         end
 
-        opts.on("--sort S", "Field to sort by") do |s|
+        opts.on("--sort S", "Field to sort by (name, age)") do |s|
           options[:sort] = s.downcase
         end
 
