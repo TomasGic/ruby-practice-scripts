@@ -1,7 +1,7 @@
 # rspec spec/people_service_spec.rb
 RSpec.describe RandomPeople::PeopleService do
   let(:client) { instance_double(RandomPeople::Clients::RandomUserClient) }
-  let(:mapper) { class_double(RandomPeople::UserMapper) }
+  let(:mapper) { instance_double(RandomPeople::UserMapper) }
   let(:service) { described_class.new(client: client, mapper: mapper) }
   let(:raw_response) do
     {
@@ -21,7 +21,7 @@ RSpec.describe RandomPeople::PeopleService do
         expect(client).to receive(:fetch).with(count:num_users).and_return(raw_response)
         expect(mapper).to receive(:map_data).exactly(num_users).times.and_return(fake_user)
         
-        results = service.execute
+        results = service.execute(count: num_users)
         
         expect(results).to be_an(Array)
         expect(results.size).to eq(num_users)
@@ -32,9 +32,9 @@ RSpec.describe RandomPeople::PeopleService do
     context "when raw response is empty" do
       it "fetches raw response from the client and returns an empty array without calling the mapper" do
         empty_response = { "results" => [] }
-        expect(client).to receive(:fetch).and_return(empty_response)
+        expect(client).to receive(:fetch).with(count: 1).and_return(empty_response)
         expect(mapper).not_to receive(:map_data)
-        expect(service.execute).to eq([])
+        expect(service.execute(count: 1)).to eq([])
       end
     end
 
@@ -43,7 +43,7 @@ RSpec.describe RandomPeople::PeopleService do
         broken_response = { "error" => "oops" }
         expect(client).to receive(:fetch).and_return(broken_response)
         expect(mapper).not_to receive(:map_data)
-        expect(service.execute).to eq([])
+        expect(service.execute(count: 1)).to eq([])
       end
     end
   end

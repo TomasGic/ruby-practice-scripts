@@ -14,12 +14,12 @@ module RandomPeople
         res = @http.get(url, headers: { "Accept" => "application/json" })
         
         unless res.success?
-          raise ApiError, "API request failed with status #{res.status}: #{res.body[0..50]}"
+          raise ApiError, "API request failed with status #{res.status}."
         end
         
         JSON.parse(res.body)
       rescue JSON::ParserError
-        raise ApiError, "API returned invalid JSON"
+        raise ApiError, "API returned invalid JSON."
       end
     end
   end

@@ -24,7 +24,7 @@ module RandomPeople
         if sorting_attribute
           users = sort_array(arr: users, by: sorting_attribute)
         else 
-          raise OptionParser::InvalidArgument, "Invalid sort field '#{sorting_attribute}'."
+          raise OptionParser::InvalidArgument, "Invalid sort field '#{options[:sort]}'."
         end
       end
 
@@ -34,6 +34,14 @@ module RandomPeople
       end
       formatter = choose_formatter(options)
       puts formatter.format(users)
+    rescue OptionParser::ParseError, UnsupportedFormatError => e
+      abort("Usage error: #{e.message}")
+      
+    rescue ApiError => e
+      abort("API Error: #{e.message}")
+    
+    rescue StandardError => e
+      abort("An unexpected error occurred: #{e.message}")
     end
 
     private 

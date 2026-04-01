@@ -47,35 +47,46 @@ RSpec.describe RandomPeople::Cli do
       cli.run(["--format", "json"])
     end
 
-    it "raises custom error when unsupported format type is passed" do
+    it "exits with status 1 and prints custom error when unsupported format type is passed" do
       allow(service).to receive(:execute).and_return(users)
       expect {
-        cli.run(["--format", "csv"])
-    }.to raise_error(RandomPeople::UnsupportedFormatError, /Format csv is not supported/)
+        expect { cli.run(["--format", "csv"]) }.to output(/Format csv is not supported/).to_stderr
+      }.to raise_error(SystemExit) do |error|
+        
+        expect(error.status).to eq(1)
+      end
     end
 
-    it "raises InvalidArgument error when count is passed as negative number" do 
+    it "exits with status 1 when count is passed as negative number" do 
       expect(service).not_to receive(:execute)
       
       expect {
-        cli.run(["--count", "-5"])
-      }.to raise_error(OptionParser::InvalidArgument, /Count must be a positive number/)
+        expect { cli.run(["--count", "-5"]) }.to output(/Count must be a positive number/).to_stderr
+      }.to raise_error(SystemExit) do |error|
+        
+        expect(error.status).to eq(1)
+      end
     end
 
-    it "raises InvalidArgument error when a string is passed after --count" do
+    it "exits with status 1 when a string is passed after --count" do
       expect(service).not_to receive(:execute)
       
-      expect {
-        cli.run(["--count", "format"])
-      }.to raise_error(OptionParser::InvalidArgument)
+      expect { cli.run(["--count", "format"]) }
+      .to raise_error(SystemExit) do |error|
+        expect(error.status).to eq(1)
+      end
     end
 
-    it "raises InvalidArgument error when any invalid argument is passed" do
+    it "exits with status 1 when unrecognized argument is passed" do
       expect(service).not_to receive(:execute)
       
+      #user types format instead of --format
       expect {
-        cli.run(["--count", "4", "format", "json"])#user typed format instead of --format
-      }.to raise_error(OptionParser::InvalidArgument, /Unrecognized arguments: format, json. Did you forget --?/)
+        expect { cli.run(["--count", "4", "format", "json"]) }.to output(/Unrecognized arguments/).to_stderr
+      }.to raise_error(SystemExit) do |error|
+        
+        expect(error.status).to eq(1)
+      end
     end
 
     it "displays 'no users found' when users array is empty" do
@@ -88,11 +99,14 @@ RSpec.describe RandomPeople::Cli do
 
     end
 
-    it "raises InvalidArgument error when user tries to sort by non-existent attribute" do
+    it "exits with status 1 and prints custom error message when user tries to sort by invalid sorting field" do
       allow(service).to receive(:execute).with(count: 5).and_return(users)
-      expect { 
-        cli.run(["--count", "5", "--sort", "email"]) 
-      }.to raise_error(OptionParser::InvalidArgument)
+      expect {
+        expect { cli.run(["--count", "5", "--sort", "email"]) }.to output(/Invalid sort field 'email'/).to_stderr
+      }.to raise_error(SystemExit) do |error|
+        
+        expect(error.status).to eq(1)
+      end
     end
 
     describe "Filtering users by country name" do
