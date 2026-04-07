@@ -20,10 +20,16 @@ RSpec.describe Shipping::Package do
   end
 
   describe "validating package dimensions" do 
-    it "throws an error if weight is 0" do
+    it "throws InvalidPackageError if weight is 0" do
       expect {
         Shipping::Package.new(weight: 0, length: 40, width: 20, height: 10, zone: "urban")
-    }.to raise_error(ArgumentError, "Weight and dimensions must be positive!")
+    }.to raise_error(Shipping::InvalidPackageError, /cannot be negative or zero/)
+    end
+
+    it "throws InvalidPackageError if dimensions are negative or 0" do
+      expect { 
+        Shipping::Package.new(weight: 5, length: -40, width: 0, height: 0, zone: "urban")
+    }.to raise_error(Shipping::InvalidPackageError, /cannot be negative or zero/)
     end
 
     it "converts dimensions to floats if passed as string" do

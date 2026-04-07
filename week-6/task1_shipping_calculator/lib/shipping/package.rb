@@ -1,20 +1,29 @@
 module Shipping
+  class InvalidPackageError < StandardError; end
+  
   class Package
     attr_reader :weight, :length, :width, :height, :zone
     
     def initialize(weight:, length:, width:, height:, zone:)
-      @weight = Float(weight)
-      @length = Float(length)
-      @width = Float(width)
-      @height = Float(height)
-      @zone = zone
+      begin
+        @weight, @length, @width, @height = [weight, length, width, height].map do |val|
+          Float(val)
+        end
+      rescue ArgumentError, TypeError
+        raise InvalidPackageError, "Weight and dimensions must be numeric"
+      end
 
-      validate_attributes!
+      if zone.nil? || zone.to_s.strip.empty?
+        raise InvalidPackageError, "Zone is required!"
+      end
+      @zone = zone
+      
+      validate!
     end
 
-    def validate_attributes!
+    def validate!
       if [@weight, @length, @width, @height].any? { |attr| attr <= 0 }
-        raise ArgumentError, "Weight and dimensions must be positive!"
+        raise InvalidPackageError, "Weight and/or dimensions cannot be negative or zero!"
       end
     end
   end
