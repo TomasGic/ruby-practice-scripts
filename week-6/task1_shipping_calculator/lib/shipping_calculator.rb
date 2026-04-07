@@ -1,2 +1,6 @@
 require_relative "shipping/package"
 require_relative "shipping/loggable"
+require_relative "shipping/calculators/base.rb"
+require_relative "shipping/calculators/standard.rb"
+require_relative "shipping/calculators/express.rb"
+require_relative "shipping/calculators/overnight.rb"
