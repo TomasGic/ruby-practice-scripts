@@ -1,0 +1,72 @@
+#!/usr/bin/env ruby
+
+# 1. we load the main program file
+require_relative '../lib/shipping_calculator'
+
+# 2. define some test packages
+packages = [
+  {
+    name: "Standard Small Package",
+    carrier: :standard,
+    weight: 5, length: 40, height: 20, width: 20, zone: "urban"
+  },
+  {
+    name: "Express Oversized Package",
+    carrier: :express,
+    weight: 8, length: 120, width: 30, height: 30, zone: "remote_a"
+  },
+  {
+    name: "Overnight Heavy Package",
+    carrier: :overnight,
+    weight: 25, length: 50, width: 50, height: 50, zone: "urban"
+  },
+  {
+    name: "Invalid package",
+    carrier: :standard,
+    weight: 0, length: -50, width: 50, height: 50, zone: "urban"
+  }
+]
+
+def display_result(carrier, result)
+  puts "--- #{carrier.upcase} ---"
+  puts "Base rate:   $#{'%.2f' % result[:base_rate]}"
+  puts "Surcharge:  $#{'%.2f' % result[:surcharge]}"
+  puts "Discount:   -$#{'%.2f' % result[:discount]}"
+  puts "TOTAL:       $#{'%.2f' % result[:total]}"
+end
+
+# 3. process each package 
+packages.each do |data|
+  puts "\nProcessing: #{data[:name]}"
+  
+  begin
+    package = Shipping::Package.new(
+      weight: data[:weight], 
+      length: data[:length], 
+      width: data[:width], 
+      height: data[:height], 
+      zone: data[:zone]
+    )
+    # use the factory
+    calculator = Shipping::ShippingCalculator.for(carrier: data[:carrier])
+    
+    # run the calculation
+    result = calculator.calculate(package)
+    
+    # display the results
+    puts display_result(data[:carrier], result)
+    
+    puts "Logs:"
+    calculator.logs.each { |line| puts "   #{line}" }
+  
+    # error handling
+  rescue Shipping::InvalidPackageError => e
+    puts "Package Error: #{e.message}"
+  rescue Shipping::UnknownCarrierError => e
+    puts "Carrier Error: #{e.message}"
+  rescue => e
+    puts "Unexpected Error: #{e.message}"
+  end
+end
+
+
