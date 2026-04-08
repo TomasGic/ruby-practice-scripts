@@ -8,7 +8,7 @@ module Shipping
 
     def apply_surcharges(package)
       surcharge1 = oversized?(package) ? 5.00 : 0.00
-      surcharge2 = remote_zone(package) ? 3.00 : 0.00
+      surcharge2 = remote_zone?(package) ? 3.00 : 0.00
       surcharge1 + surcharge2
     end
 

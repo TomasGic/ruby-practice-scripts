@@ -16,7 +16,7 @@ module Shipping
       surcharge = apply_surcharges(package)
       subtotal = base_rate + surcharge
       discount = apply_discount(package, subtotal)
-      total = subtotal - discount
+      total = (subtotal - discount).round(2)
       build_result(base_rate: base_rate, surcharge: surcharge, discount: discount, total: total)
       
     end
