@@ -2,6 +2,8 @@ module Shipping
   class UnknownCarrierError < StandardError; end
   
   class ShippingCalculator
+    include Loggable
+    
     def self.for(carrier:)
       case carrier
       when :standard then StandardCalculator.new
@@ -12,10 +14,21 @@ module Shipping
     end
 
     def calculate(package)
+      
+      log validate_package(package)
+      
       base_rate = compute_base_rate(package)
+      log "Base rate: #{base_rate}"
+      
       surcharge = apply_surcharges(package)
+      log "Surcharge: #{surcharge}" if surcharge > 0.00
+      log "No surcharges applied"
+      
       subtotal = base_rate + surcharge
       discount = apply_discount(package, subtotal)
+      log "Discount: #{discount}" if discount > 0.00
+      log "No discounts applied"
+      
       total = (subtotal - discount).round(2)
       build_result(base_rate: base_rate, surcharge: surcharge, discount: discount, total: total)
       
@@ -24,7 +37,7 @@ module Shipping
     private 
 
     def validate_package(package)
-      puts "Validating package..."
+      "Validating package: #{package.weight}, zone: #{package.zone}"
     end
 
     def build_result(base_rate:, surcharge:, discount:, total:)
