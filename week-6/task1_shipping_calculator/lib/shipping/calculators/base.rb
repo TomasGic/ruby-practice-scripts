@@ -22,14 +22,14 @@ module Shipping
       log validate_package(package)
       
       base_rate = compute_base_rate(package)
-      log "Base rate: #{currency}#{base_rate}"
+      log "Base rate: #{currency}#{'%.2f' % base_rate}"
       
       surcharge = apply_surcharges(package)
-      log(surcharge > 0 ? "Surcharge: #{currency}#{surcharge}" : "No surcharges applied")
+      log(surcharge > 0 ? "Surcharge: #{currency}#{'%.2f' % surcharge}" : "No surcharges applied")
       
       subtotal = base_rate + surcharge
       discount = apply_discount(package, subtotal)
-      log(discount > 0 ? "Discount: #{currency}#{discount}" : "No discount applied")
+      log(discount > 0 ? "Discount: #{currency}#{'%.2f' % discount}" : "No discount applied")
       
       total = (subtotal - discount).round(2)
       build_result(base_rate: base_rate, surcharge: surcharge, discount: discount, total: total)

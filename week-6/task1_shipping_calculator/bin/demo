@@ -30,7 +30,7 @@ packages = [
 def display_result(carrier, result)
   puts "--- #{carrier.upcase} ---"
   puts "Base rate:   $#{'%.2f' % result[:base_rate]}"
-  puts "Surcharge:  $#{'%.2f' % result[:surcharge]}"
+  puts "Surcharge:   $#{'%.2f' % result[:surcharge]}"
   puts "Discount:   -$#{'%.2f' % result[:discount]}"
   puts "TOTAL:       $#{'%.2f' % result[:total]}"
 end
