@@ -4,7 +4,6 @@ module Shipping
   class ShippingCalculator
     include Loggable
 
-    
     def self.registry
       @registry ||= {}
     end
