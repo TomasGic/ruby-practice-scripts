@@ -47,7 +47,8 @@ packages.each do |data|
       height: data[:height], 
       zone: data[:zone]
     )
-    # use the factory
+
+    # use the factory method
     calculator = Shipping::ShippingCalculator.for(carrier: data[:carrier])
     
     # run the calculation

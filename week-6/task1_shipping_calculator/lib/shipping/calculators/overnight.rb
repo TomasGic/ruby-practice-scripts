@@ -1,5 +1,6 @@
 module Shipping
   class OvernightCalculator < ShippingCalculator
+    ShippingCalculator.register_carrier(carrier: :overnight, klass: self)
     
     private
     def compute_base_rate(package)

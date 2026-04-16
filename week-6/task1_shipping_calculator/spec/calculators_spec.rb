@@ -3,17 +3,14 @@ RSpec.describe Shipping::ShippingCalculator do
   
   describe ".for" do
     it "returns a StandardCalculator when carrier is :standard" do
-      Shipping::ShippingCalculator.register_carrier(carrier: :standard, klass: Shipping::StandardCalculator)
       expect(Shipping::ShippingCalculator.for(carrier: :standard)).to be_a(Shipping::StandardCalculator)
     end
 
     it "returns an ExpressCalculator when carrier is :express" do
-      Shipping::ShippingCalculator.register_carrier(carrier: :express, klass: Shipping::ExpressCalculator)
       expect(Shipping::ShippingCalculator.for(carrier: :express)).to be_a(Shipping::ExpressCalculator)
     end
 
     it "returns an OvernightCalculator when carrier is :overnight" do
-      Shipping::ShippingCalculator.register_carrier(carrier: :overnight, klass: Shipping::OvernightCalculator)
       expect(Shipping::ShippingCalculator.for(carrier: :overnight)).to be_a(Shipping::OvernightCalculator)
     end
 

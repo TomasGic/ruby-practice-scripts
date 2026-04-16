@@ -1,5 +1,6 @@
 module Shipping
   class StandardCalculator < ShippingCalculator
+    ShippingCalculator.register_carrier(carrier: :standard, klass: self)
     
     private
     def compute_base_rate(package)

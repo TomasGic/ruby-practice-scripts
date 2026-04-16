@@ -4,14 +4,17 @@ module Shipping
   class ShippingCalculator
     include Loggable
 
-    @registry = {}
+    
+    def self.registry
+      @registry ||= {}
+    end
 
-    def self.register_carrier(carrier:, klass:)
-      @registry[carrier] = klass
+    def self.register_carrier(carrier:, klass: self)
+      registry[carrier] = klass
     end
     
     def self.for(carrier:)
-      klass = @registry[carrier]
+      klass = registry[carrier]
       raise UnknownCarrierError, "Carrier #{carrier} not recognized" unless klass
       klass.new
     end
