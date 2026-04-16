@@ -18,7 +18,7 @@ packages = [
   {
     name: "Overnight Heavy Package",
     carrier: :overnight,
-    weight: 25, length: 50, width: 50, height: 50, zone: "urban"
+    weight: 20.5, length: 120, width: 40, height: 30, zone: "remote_b"
   },
   {
     name: "Invalid package",

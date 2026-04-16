@@ -3,14 +3,17 @@ module Shipping
   
   class ShippingCalculator
     include Loggable
+
+    @registry = {}
+
+    def self.register_carrier(carrier:, klass:)
+      @registry[carrier] = klass
+    end
     
     def self.for(carrier:)
-      case carrier
-      when :standard then StandardCalculator.new
-      when :express then ExpressCalculator.new
-      when :overnight then OvernightCalculator.new
-      else raise UnknownCarrierError, "Carrier #{carrier} not recognized"
-      end
+      klass = @registry[carrier]
+      raise UnknownCarrierError, "Carrier #{carrier} not recognized" unless klass
+      klass.new
     end
 
     def currency
@@ -32,6 +35,7 @@ module Shipping
       log(discount > 0 ? "Discount: #{currency}#{'%.2f' % discount}" : "No discount applied")
       
       total = (subtotal - discount).round(2)
+      log("Total: #{currency}#{'%.2f' % total}")
       build_result(base_rate: base_rate, surcharge: surcharge, discount: discount, total: total)
       
     end

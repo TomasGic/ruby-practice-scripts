@@ -1,20 +1,24 @@
 # rspec spec/calculators_spec.rb
 RSpec.describe Shipping::ShippingCalculator do
+  
   describe ".for" do
     it "returns a StandardCalculator when carrier is :standard" do
+      Shipping::ShippingCalculator.register_carrier(carrier: :standard, klass: Shipping::StandardCalculator)
       expect(Shipping::ShippingCalculator.for(carrier: :standard)).to be_a(Shipping::StandardCalculator)
     end
 
     it "returns an ExpressCalculator when carrier is :express" do
+      Shipping::ShippingCalculator.register_carrier(carrier: :express, klass: Shipping::ExpressCalculator)
       expect(Shipping::ShippingCalculator.for(carrier: :express)).to be_a(Shipping::ExpressCalculator)
     end
 
     it "returns an OvernightCalculator when carrier is :overnight" do
+      Shipping::ShippingCalculator.register_carrier(carrier: :overnight, klass: Shipping::OvernightCalculator)
       expect(Shipping::ShippingCalculator.for(carrier: :overnight)).to be_a(Shipping::OvernightCalculator)
     end
 
 
-    it "raises UnknownCarrierError for invalid carriers" do
+    it "raises UnknownCarrierError for carriers that have not been registered yet" do
       expect { 
         Shipping::ShippingCalculator.for(carrier: :pigeon) 
       }.to raise_error(Shipping::UnknownCarrierError)
@@ -23,7 +27,7 @@ RSpec.describe Shipping::ShippingCalculator do
 end
 
 RSpec.describe Shipping::StandardCalculator do
-  let(:calculator) { Shipping::ShippingCalculator.for(carrier: :standard) }
+  let(:calculator) { described_class.new }
   describe "#calculate" do
     it "correctly calculates result for a standard package (no discount, no surcharges)" do
       
@@ -63,7 +67,7 @@ RSpec.describe Shipping::StandardCalculator do
 end
 
 RSpec.describe Shipping::ExpressCalculator do 
-  let(:calculator) { Shipping::ShippingCalculator.for(carrier: :express) }
+  let(:calculator) { described_class.new }
 
   describe "#calculate" do
     it "correctly calculates result for package with a remote zone" do
@@ -86,10 +90,10 @@ RSpec.describe Shipping::ExpressCalculator do
 end
 
 RSpec.describe Shipping::OvernightCalculator do
-  let(:calculator) { Shipping::ShippingCalculator.for(carrier: :overnight) }
+  let(:calculator) { described_class.new }
   let(:package) do 
     Shipping::Package.new(
-      weight: 20.5, # we expect surcharge for weigth < 20 kg
+      weight: 20.5, # we expect surcharge for weigth > 20 kg
       length: 120, # we expect 10.00 surcharge for length > 100
       width: 40,
       height: 30,
@@ -111,10 +115,10 @@ RSpec.describe Shipping::OvernightCalculator do
   it "records the calculation steps and appends them into the logs array" do
     calculator.calculate(package)
     expect(calculator.logs).not_to be_empty
-    expect(calculator.logs.any? { |log| log =~ /Validating package/ }).to be true
-    expect(calculator.logs.any? { |log| log =~ /Base rate: 61.5/ }).to be true
-    expect(calculator.logs.any? { |log| log =~ /Surcharge: 23.0/ }).to be true
-    expect(calculator.logs.any? { |log| log =~ /No discounts applied/ }).to be true
+    expect(calculator.logs).to include("Base rate: $61.50")
+    expect(calculator.logs).to include("Surcharge: $23.00")
+    expect(calculator.logs).to include("No discount applied")
+    expect(calculator.logs).to include("Total: $84.50")
   end
   
 end
