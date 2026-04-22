@@ -4,6 +4,7 @@ module Orders
   class InvalidQuantityError < StandardError; end
   
   class Order
+    include Observable
     attr_reader :items, :completed
 
     def initialize
@@ -16,6 +17,7 @@ module Orders
       raise AlreadyCompletedError, "Cannot add items to already completed order" if @completed
       item = { product_name: product.name, count: quantity, total_price: product.price * quantity }
       @items << item
+      notify_observers(event: :item_added, data: { product: item[:product_name], quantity: item[:count]})
     end
 
     def total
@@ -38,6 +40,7 @@ module Orders
       raise EmptyOrderError, "Order cannot be empty" if @items.empty?
       raise AlreadyCompletedError, "Order has already been completed" if @completed
       @completed = true
+      notify_observers(event: :order_completed, data: {total: self.total, count: self.item_count})
     end
   end
 end
