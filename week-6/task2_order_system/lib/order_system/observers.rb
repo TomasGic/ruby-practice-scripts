@@ -13,4 +13,5 @@ module Orders
 
   class EmailNotifier < BaseObserver; end
   class AnalyticsTracker < BaseObserver; end
+  class InventoryManager < BaseObserver; end
 end

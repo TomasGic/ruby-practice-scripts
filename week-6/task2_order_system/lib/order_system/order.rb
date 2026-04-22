@@ -25,7 +25,7 @@ module Orders
       @items.each do |item|
         sum_total += item[:total_price]
       end
-      sum_total
+      sum_total.round(2)
     end
 
     def item_count
