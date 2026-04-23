@@ -1,5 +1,5 @@
 # Shipping Calculator System
-This is a small object-oriented Ruby project that implements a shipping calculator logic using primarily two design patterns: factory method and template method. 
+This is a small object-oriented Ruby project that implements a shipping calculator logic using primarily two design patterns: factory method pattern and template method pattern. 
 
 ## Design patterns used
 1. Factory method pattern - uses factory method to manage the creation of individual calculator objects. The main reason for using the factory method is to ensure that the object creation logic is hidden away from the main code. In our system it is implemented without any if/else or case statements, but rather using a registry hash variable which stores all the available carriers. The factory method simply looks up the specific carrier type that is passed as an argument and returns the correct instance of the calculator subclass. 
