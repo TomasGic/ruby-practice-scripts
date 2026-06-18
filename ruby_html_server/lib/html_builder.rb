@@ -1,7 +1,6 @@
 module HtmlBuilder
   def self.tag(name, **attributes)
     attributes = map_attributes(attributes)
-    # attributes.empty? ? "#{tag}>" : "#{tag} #{attributes}>"
     "<#{name.to_s}#{attributes}>"
   end
 
@@ -88,6 +87,19 @@ module HtmlBuilder
     input_html = tag(:input, **input_attributes)
     "#{label_html}#{input_html}"
   end 
+
+  def escape(text)
+    return "" if text.nil? || text.strip.empty?
+    text.to_s.gsub(/[&<>"']/) do |match|
+      case match
+      when "&" then "&amp;"
+      when "<" then "&lt;"
+      when ">" then "&gt;"
+      when "'" then "&#39;"
+      when '"' then "&quot;"
+      end
+    end
+  end
 
   private 
   def self.map_attributes(attributes)
