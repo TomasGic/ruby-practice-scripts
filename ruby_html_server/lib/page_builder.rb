@@ -1,4 +1,8 @@
+require_relative "html_builder"
+require_relative "style_builder"
+
 class PageBuilder
+  include HtmlBuilder
   attr_reader :title, :lang
 
   def initialize(title:, lang: "en")
@@ -8,11 +12,8 @@ class PageBuilder
 
   def build(&block)
     styles = build_styles #this returns a raw css string, but should perhaps return a css file path?
-    body_content = block.call(self) #clarify how the build method will be called with a block exactly
-    #Does self represent the instance of PageBuilder class?
-    #Why do we pass self as an argument to the block?
-
-    HtmlBuilder.html_document(title: title, lang: lang, stylesheets: [styles]) do
+    body_content = block.call(self) #why do we pass self as argument to the block?
+    HtmlBuilder.html_document(title: title, lang: lang, stylesheets: [styles]) do #why do we write title and not @title?
       body_content
     end
   end
@@ -21,7 +22,7 @@ class PageBuilder
 
   def build_styles
     StyleBuilder.build do |css|
-      base_styles(css)
+      base_styles(css) # should we add page_specific_styles method here?
     end
   end
 

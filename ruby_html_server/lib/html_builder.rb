@@ -1,5 +1,5 @@
 module HtmlBuilder
-  def self.tag(name, **attributes)
+  def self.tag(name, **attributes) #we pass the tag as symbol not string - clarify why?
     attributes = map_attributes(attributes)
     "<#{name.to_s}#{attributes}>"
   end
