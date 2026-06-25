@@ -12,6 +12,7 @@ class StyleBuilder
   def rule(selector, **properties)
     properties = properties.map do |key, value|
       key = key.to_s.gsub("_", "-")
+      value = value.to_s.gsub("_", "-")
       " #{key}: #{value};"
     end.join("\n")
     

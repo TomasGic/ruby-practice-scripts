@@ -13,7 +13,7 @@ class PageBuilder
   def build(&block)
     css_path = "/styles/#{stylesheet_name}.css"
     body_content = block.call 
-    HtmlBuilder.html_document(title: title, lang: lang, stylesheets: [css_path]) do #why do we write title and not @title?
+    HtmlBuilder.html_document(title: title, lang: lang, stylesheets: [css_path]) do
       body_content
     end
   end
