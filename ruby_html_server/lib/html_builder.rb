@@ -1,7 +1,7 @@
 module HtmlBuilder
   def self.tag(name, **attributes) #we pass the tag as symbol not string - clarify why?
     attributes = map_attributes(attributes)
-    "<#{name.to_s}#{attributes}>"
+    "<#{name}#{attributes}>"
   end
 
   def self.content_tag(name, content: nil, **attributes, &block)
@@ -88,7 +88,7 @@ module HtmlBuilder
     "#{label_html}#{input_html}"
   end 
 
-  def escape(text)
+  def self.escape(text)
     return "" if text.nil? || text.strip.empty?
     text.to_s.gsub(/[&<>"']/) do |match|
       case match

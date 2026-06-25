@@ -3,6 +3,8 @@ require_relative "style_builder"
 require_relative "page_builder"
 
 class Router
+  attr_reader :routes
+  
   def initialize
     @routes = {}
   end
@@ -14,7 +16,13 @@ class Router
   def resolve(method:, path:)
     handler = @routes["#{method} #{path}"]
     if handler
-      [200, "text/html", handler.call]
+      result = handler.call
+      if result.is_a?(Array)
+        css_string = result[1]
+        [200, "text/css", css_string]
+      else
+        [200, "text/html", result]
+      end
     else
       [404, "text/html", not_found_page(path)]
     end
@@ -25,7 +33,7 @@ class Router
   def not_found_page(path)
     page = PageBuilder.new(title: "404 - Page Not Found")
 
-    page.build do
+    page.build do 
       h1_heading = HtmlBuilder.content_tag(:h1, content: "404 - Not Found")
       paragraph = HtmlBuilder.content_tag(
       :p, 
@@ -36,4 +44,4 @@ class Router
     
     end
   end
-end
+end 

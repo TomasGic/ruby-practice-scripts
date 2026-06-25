@@ -11,19 +11,23 @@ class PageBuilder
   end
 
   def build(&block)
-    styles = build_styles #this returns a raw css string, but should perhaps return a css file path?
-    body_content = block.call(self) #why do we pass self as argument to the block?
-    HtmlBuilder.html_document(title: title, lang: lang, stylesheets: [styles]) do #why do we write title and not @title?
+    css_path = "/styles/#{stylesheet_name}.css"
+    body_content = block.call 
+    HtmlBuilder.html_document(title: title, lang: lang, stylesheets: [css_path]) do #why do we write title and not @title?
       body_content
+    end
+  end
+
+  def build_styles
+    StyleBuilder.build do |css|
+      base_styles(css)
     end
   end
 
   private
 
-  def build_styles
-    StyleBuilder.build do |css|
-      base_styles(css) # should we add page_specific_styles method here?
-    end
+  def stylesheet_name
+    self.class.name.downcase.gsub("page", "")
   end
 
   def base_styles(css)
