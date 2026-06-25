@@ -20,6 +20,6 @@ class HomePage < PageBuilder
   private
 
   def page_specific_styles(css)
-    css.rule(:body, background_color: "red", text_align: center)
+    css.rule("body", background_color: "red", text_align: "center")
   end
 end
