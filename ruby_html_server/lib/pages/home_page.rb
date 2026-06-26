@@ -1,4 +1,8 @@
+require_relative '../shared_layout'
+
 class HomePage < PageBuilder
+  include SharedLayout
+  
   def initialize
     super(title: "Home page")
   end
@@ -12,8 +16,7 @@ class HomePage < PageBuilder
 
   def render
     build do
-      heading = HtmlBuilder.content_tag(:h1, content: "Welcome to our home page")
-      "#{heading}"
+      "#{header_html}#{footer_html}"
     end
   end
 
