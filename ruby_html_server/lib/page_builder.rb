@@ -36,8 +36,8 @@ class PageBuilder
       margin: "0",
       font_family: "system-ui, -apple-system, sans-serif",
       line_height: "1.6",
-      color: "#1a1a1a",
-      background_color: "#fafafa"
+      color: "#b9bec8",
+      background_color: "#1e1e2e"
     )
     css.rule("img", max_width: "100%", height: "auto", display: "block")
   end
