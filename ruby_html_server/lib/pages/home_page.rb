@@ -72,7 +72,9 @@ class HomePage < PageBuilder
     css.media("min-width: 1024px") do |mq|
       mq.rule(".skills-list", display: "grid", grid_template_columns: "200px 1fr")
     end
-
-    
+    footer_css(css)
+    css.rule("footer", padding: "3rem 1.5rem 0", margin_top: "2rem")
+    css.rule("footer nav", display: "flex", justify_content: "center")
+    css.rule("footer p", margin_top: "2rem")
   end
 end

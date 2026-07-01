@@ -14,6 +14,14 @@ module SharedLayout
 
   def footer_html
     HtmlBuilder.content_tag(:footer, class: "site-footer") do
+      HtmlBuilder.nav(
+        [
+          { text: "Home", href: "/" },
+          { text: "About", href: "/about" },
+          { text: "Contact", href: "/contact" }
+        ],
+        aria_label: "Footer navigation"
+      ) + 
       HtmlBuilder.content_tag(:p, content: "&copy; 2026 Tomas. Built with pure Ruby.")
     end
   end
@@ -25,6 +33,14 @@ module SharedLayout
       color: "#b9bec8",
       padding: "2.5rem 1rem",
       text_align: "center"
+    )
+  end
+
+  def footer_css(css)
+    css.rule(
+      "footer",
+      background_color: "#1e1e2e",
+      color: "#b9bec8"
     )
   end
 end
