@@ -58,8 +58,6 @@ class HomePage < PageBuilder
   def page_specific_styles(css)
     header_css(css)
     css.rule("body", background_color: "#1e1e2e", text_align: "center")
-    css.rule("nav", display: "flex", gap: "2rem", justify_content: "center")
-    css.rule("nav a", text_decoration: "none", color: "#b9bec8", text_transform: "uppercase", display: "inline-block")
     css.rule(".hero", text_align: "center", margin_bottom: "4rem")
     css.rule("#skills", max_width: "800px", margin: "0 auto")
     css.rule("#skills h2", margin_bottom: "2rem")
@@ -73,8 +71,5 @@ class HomePage < PageBuilder
       mq.rule(".skills-list", display: "grid", grid_template_columns: "200px 1fr")
     end
     footer_css(css)
-    css.rule("footer", padding: "3rem 1.5rem 0", margin_top: "2rem")
-    css.rule("footer nav", display: "flex", justify_content: "center")
-    css.rule("footer p", margin_top: "2rem")
   end
 end

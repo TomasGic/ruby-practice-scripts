@@ -1,13 +1,20 @@
 require 'webrick'
 require_relative 'lib/router'
 require_relative 'lib/pages/home_page'
+require_relative 'lib/pages/about_page'
 
 router = Router.new
 home_page = HomePage.new
+about_page = AboutPage.new
 
 router.add_route(method: "GET", path: "/") { home_page.render }
 router.add_route(method: "GET", path: "/styles/home.css") do
   ["text/css", home_page.build_styles]
+end
+
+router.add_route(method: "GET", path: "/about") { about_page.render }
+router.add_route(method: "GET", path: "/styles/about.css") do
+  ["text/css", about_page.build_styles]
 end
 server = WEBrick::HTTPServer.new(Port: 3000)
 
