@@ -25,10 +25,6 @@ class PageBuilder
     end
   end 
 
-  def render
-    raise NotImplementedError, "#{self.class} must implement the #render method"
-  end
-
   private
 
   def stylesheet_name

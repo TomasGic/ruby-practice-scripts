@@ -51,6 +51,7 @@ class HomePage < PageBuilder
 
   def page_specific_styles(css)
     header_css(css)
+    
     css.rule("body", background_color: "#1e1e2e", text_align: "center")
     css.rule(".hero", text_align: "center", margin_bottom: "4rem")
     css.rule("#skills", max_width: "800px", margin: "0 auto")
@@ -64,6 +65,7 @@ class HomePage < PageBuilder
     css.media("min-width: 1024px") do |mq|
       mq.rule(".skills-list", display: "grid", grid_template_columns: "200px 1fr")
     end
+    
     footer_css(css)
   end
 end

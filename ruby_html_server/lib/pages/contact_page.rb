@@ -55,6 +55,7 @@ class ContactPage < PageBuilder
 
   def page_specific_styles(css)
     header_css(css)
+    
     css.rule("#contact h2", text_align: "center")
     css.rule("form", margin: "0 auto", max_width: "800px")
     css.rule("fieldset", display: "grid", padding: "2.5rem 1.5rem", grid_template_columns: "minmax(0, 1fr)", gap: "1.5rem", border_radius: "10px", margin_bottom: "2rem")

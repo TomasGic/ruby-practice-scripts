@@ -66,6 +66,7 @@ class AboutPage < PageBuilder
   
   def page_specific_styles(css)
     header_css(css)
+    
     css.rule("#profile", margin: "0 auto", text_align: "center")
     css.rule("#technologies", text_align: "center", margin_top: "4rem")
     css.rule(".table-container", width: "100%", overflow_x: "auto")
@@ -73,6 +74,7 @@ class AboutPage < PageBuilder
     css.rule("th, td", padding: "0.9rem", text_align: "left", border_bottom: "1px solid #334155")
     css.rule("caption", margin_bottom: "1rem")
     css.rule("figure", text_align: "center", margin_top: "4rem")
+    
     footer_css(css)
   end
 end

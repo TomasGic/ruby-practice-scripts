@@ -34,8 +34,8 @@ module HtmlBuilder
   end
 
   def self.list(items, type:, **attributes)
-    opening_list_tag = tag(type.to_sym, **attributes)
-    closing_list_tag = "</#{type.to_s}>"
+    opening_list_tag = tag(type, **attributes)
+    closing_list_tag = "</#{type}>"
     list_items = items.map { |item| "<li>#{item}</li>" }.join("")
     
     "#{opening_list_tag}#{list_items}#{closing_list_tag}"
@@ -44,7 +44,6 @@ module HtmlBuilder
 
   def self.definition_list(pairs, **attributes)
     attributes = map_attributes(attributes)
-    # attributes = " #{attributes}" unless attributes.empty?
     pairs = pairs.map { |term, description| "<dt>#{term}</dt><dd>#{description}</dd>"}.join("")
     
     "<dl#{attributes}>#{pairs}</dl>"
@@ -88,18 +87,6 @@ module HtmlBuilder
     "#{label_html}#{input_html}"
   end 
 
-  # def self.labeled_form_element(form_element:, label:, name:, type: nil, id: nil, **attributes, &block)
-  #   input_id = id || name
-  #   label_html = content_tag(:label, content: label, for: input_id)
-  #   if type.nil?
-  #     input_attributes = attributes.merge(name: name, id: input_id)
-  #   else 
-  #     input_attributes = attributes.merge(type: type, name: name, id: input_id)
-  #   end
-  #   input_html = tag(form_element, **input_attributes)
-  #   "#{label_html}#{input_html}"
-  # end
-
   def self.labeled_select_input(values:, label:, name:, id: nil, **attributes)
     input_id = id || name
     label_html = content_tag(:label, content: label, for: input_id)
@@ -139,6 +126,7 @@ module HtmlBuilder
   end
 
   private 
+  
   def self.map_attributes(attributes)
     attributes_string = attributes.map do |key, value| 
       if value == true
