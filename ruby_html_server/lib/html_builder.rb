@@ -52,7 +52,7 @@ module HtmlBuilder
   def self.table(headers:, rows:, caption: nil, **attributes)
     attributes = map_attributes(attributes)
     caption_tag = caption ? "<caption>#{caption}</caption>" : ""
-    headers = headers.map { |header| "<th>#{header.to_s}</th>" }.join("")
+    headers = headers.map { |header| "<th scope='col'>#{header.to_s}</th>" }.join("")
     rows = rows.map do |row| 
       row.map { |value| "<td>#{value}</td>" }.join("")
     end.map { |row| "<tr>#{row}</tr>"}.join("")
