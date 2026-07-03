@@ -8,6 +8,7 @@ router = Router.new
 home_page = HomePage.new
 about_page = AboutPage.new
 contact_page = ContactPage.new
+not_found_page = NotFoundPage.new
 
 router.add_route(method: "GET", path: "/") { home_page.render }
 router.add_route(method: "GET", path: "/styles/home.css") do
@@ -23,6 +24,11 @@ router.add_route(method: "GET", path: "/contact") { contact_page.render }
 router.add_route(method: "GET", path: "/styles/contact.css") do
   ["text/css", contact_page.build_styles]
 end
+
+router.add_route(method: "GET", path: "/styles/notfound.css") do
+  ["text/css", not_found_page.build_styles]
+end
+
 server = WEBrick::HTTPServer.new(Port: 3000)
 
 server.mount_proc '/' do |req, res|
