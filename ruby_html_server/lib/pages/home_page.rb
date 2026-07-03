@@ -7,13 +7,6 @@ class HomePage < PageBuilder
     super(title: "Home page")
   end
 
-  def build_styles
-    StyleBuilder.build do |css|
-      base_styles(css)
-      page_specific_styles(css)
-    end
-  end
-
   def render
     build do
       hero_section = HtmlBuilder.content_tag(:div, class: "hero") do
@@ -29,26 +22,27 @@ class HomePage < PageBuilder
           }, class: "skills-list")
         end
 
-        milestones = [
-          "Created my first github repo and made my first git commit.",
-          "Wrote my first Ruby script.",
-          "For the first time I analyzed my code in terms of its time complexity.",
-          "Created my first OOP program in Ruby using Test Driven Development approach.",
-          "Created my first web page only using HTML semantic elements."
-        ]
+      milestones = [
+        "Created my first github repo and made my first git commit.",
+        "Wrote my first Ruby script.",
+        "For the first time I analyzed my code in terms of its time complexity.",
+        "Created my first OOP program in Ruby using Test Driven Development approach.",
+        "Created my first web page only using HTML semantic elements."
+      ]
 
-        dates = ["2026-01-01", "2026-01-07", "2026-01-14", "2026-01-21", "2026-02-02"]
+      dates = ["2026-01-01", "2026-01-07", "2026-01-14", "2026-01-21", "2026-02-02"]
 
-        milestones_list_items = milestones.zip(dates).map do |milestone, date|
-          time_tag = HtmlBuilder.content_tag(:time, content: date, datetime: date)
-          "#{time_tag} - #{milestone}"
-        end
+      milestones_list_items = milestones.zip(dates).map do |milestone, date|
+        time_tag = HtmlBuilder.content_tag(:time, content: date, datetime: date)
+        "#{time_tag} - #{milestone}"
+      end
 
-        milestones_section = HtmlBuilder.content_tag(:section, id: "milestones") do 
-          HtmlBuilder.content_tag(:h2, content: "Recent Milestones") +
-          HtmlBuilder.list(milestones_list_items, type: :ol)
-        end
+      milestones_section = HtmlBuilder.content_tag(:section, id: "milestones") do 
+        HtmlBuilder.content_tag(:h2, content: "Recent Milestones") +
+        HtmlBuilder.list(milestones_list_items, type: :ol)
+      end
       
+      #final html output
       "#{header_html}#{hero_section}#{skills_section}#{milestones_section}#{footer_html}"
     end
   end

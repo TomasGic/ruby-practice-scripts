@@ -7,13 +7,6 @@ class ContactPage < PageBuilder
     super(title: "Contact page")
   end
 
-  def build_styles
-    StyleBuilder.build do |css|
-      base_styles(css)
-      page_specific_styles(css)
-    end
-  end
-
   def render
     build do
 
@@ -47,6 +40,7 @@ class ContactPage < PageBuilder
           HtmlBuilder.content_tag(:button, content: "Clear Form", type: "reset")
       end
       
+      #final html output
       HtmlBuilder.content_tag(:section, id: "contact") do
         HtmlBuilder.content_tag(:h2, content: "Get in touch") + 
         HtmlBuilder.form(action: "/submit", method: "POST") do

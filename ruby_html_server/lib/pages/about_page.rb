@@ -7,13 +7,6 @@ class AboutPage < PageBuilder
     super(title: "About page")
   end
 
-  def build_styles
-    StyleBuilder.build do |css|
-      base_styles(css)
-      page_specific_styles(css)
-    end
-  end
-
   def render
     build do
       profile_section = HtmlBuilder.content_tag(:section, id: "profile") do
@@ -64,6 +57,7 @@ class AboutPage < PageBuilder
         end
       end
 
+      #final html output
       "#{header_html}#{profile_section}#{technologies_section}#{blockquote}#{footer_html}"
     end
   end

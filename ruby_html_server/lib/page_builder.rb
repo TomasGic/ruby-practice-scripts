@@ -21,7 +21,12 @@ class PageBuilder
   def build_styles
     StyleBuilder.build do |css|
       base_styles(css)
+      page_specific_styles(css)
     end
+  end 
+
+  def render
+    raise NotImplementedError, "#{self.class} must implement the #render method"
   end
 
   private
@@ -40,5 +45,8 @@ class PageBuilder
       background_color: "#1e1e2e"
     )
     css.rule("img", max_width: "100%", height: "auto", display: "block")
+  end
+
+  def page_specific_styles(css)
   end
 end
