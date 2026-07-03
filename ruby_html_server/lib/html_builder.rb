@@ -76,17 +76,54 @@ module HtmlBuilder
   def self.form(action:, method: "POST", **attributes, &block)
     form_attributes = attributes.merge(action: action, method: method)
     form_content = block_given? ? yield : ""
-    form_html = content_tag(:form, form_content, **form_attributes)
+    form_html = content_tag(:form, content: form_content, **form_attributes)
     form_html
   end
 
   def self.labeled_input(label:, name:, type: "text", id: nil, **attributes)
     input_id = id || name
-    label_html = content_tag(:label, label, for: input_id)
+    label_html = content_tag(:label, content: label, for: input_id)
     input_attributes = attributes.merge(type: type, name: name, id: input_id)
     input_html = tag(:input, **input_attributes)
     "#{label_html}#{input_html}"
   end 
+
+  # def self.labeled_form_element(form_element:, label:, name:, type: nil, id: nil, **attributes, &block)
+  #   input_id = id || name
+  #   label_html = content_tag(:label, content: label, for: input_id)
+  #   if type.nil?
+  #     input_attributes = attributes.merge(name: name, id: input_id)
+  #   else 
+  #     input_attributes = attributes.merge(type: type, name: name, id: input_id)
+  #   end
+  #   input_html = tag(form_element, **input_attributes)
+  #   "#{label_html}#{input_html}"
+  # end
+
+  def self.labeled_select_input(values:, label:, name:, id: nil, **attributes)
+    input_id = id || name
+    label_html = content_tag(:label, content: label, for: input_id)
+  
+    input_inner_html = [content_tag(:option, content: "Select a #{label}", value: "", selected: true, disabled: true)] + 
+    values.map do |value|
+      content_tag(:option, content: "#{value.capitalize}", value: value)
+    end
+    input_inner_html = input_inner_html.join("")
+    
+    input_html = content_tag(:select, name: name, id: input_id, required: true) do
+      input_inner_html
+    end
+
+    "#{label_html}#{input_html}"
+  end
+
+  def self.labeled_textarea_input(label:, name:, id: nil, **attributes)
+    input_id = id || name
+    label_html = content_tag(:label, content: label, for: input_id)
+    input_attributes = attributes.merge(name: name, id: input_id)
+    input_html = content_tag(:textarea, **input_attributes)
+    "#{label_html}#{input_html}"
+  end
 
   def self.escape(text)
     return "" if text.nil? || text.strip.empty?
