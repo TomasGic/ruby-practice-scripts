@@ -29,10 +29,18 @@ router.add_route(method: "GET", path: "/styles/notfound.css") do
   ["text/css", not_found_page.build_styles]
 end
 
+router.add_route(method: "POST", path: "/submit") do |params|
+  parsed_params = params.transform_values { |value| HtmlBuilder.escape(value) } 
+  contact_page.render_success(parsed_params)
+end
+
 server = WEBrick::HTTPServer.new(Port: 3000)
 
 server.mount_proc '/' do |req, res|
-  status, content_type, body = router.resolve(method: req.request_method, path: req.path)
+  if req.request_method == "POST"
+    p req.query
+  end
+  status, content_type, body = router.resolve(method: req.request_method, path: req.path, params: req.query)
   res.status = status
   res['Content-Type'] = "#{content_type}; charset=utf-8"
   res.body = body

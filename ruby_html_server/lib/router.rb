@@ -14,10 +14,10 @@ class Router
     @routes["#{method} #{path}"] = handler
   end
 
-  def resolve(method:, path:)
+  def resolve(method:, path:, params: {})
     handler = @routes["#{method} #{path}"]
     if handler
-      result = handler.call
+      result = handler.call(params)
       if result.is_a?(Array)
         css_string = result[1]
         [200, "text/css", css_string]

@@ -13,7 +13,7 @@ class ContactPage < PageBuilder
       fieldset1 =  HtmlBuilder.content_tag(:fieldset) do
         HtmlBuilder.content_tag(:legend, content: "Your Information") + 
         HtmlBuilder.content_tag(:div, class: "input-wrapper") do
-          HtmlBuilder.labeled_input(label: "Full name (required)", id: "name", name: "email", minlength: "2", required: true)
+          HtmlBuilder.labeled_input(label: "Full name (required)", id: "name", name: "name", minlength: "2", required: true)
         end + 
         HtmlBuilder.content_tag(:div, class: "input-wrapper") do
           HtmlBuilder.labeled_input(label: "Email (required)", type: "email", id: "email", name: "email", required: true)
@@ -51,6 +51,27 @@ class ContactPage < PageBuilder
     end
   end
 
+  def render_success(form_data)
+    
+    build do  
+      HtmlBuilder.content_tag(:div, class: "form-submission-message") do
+        HtmlBuilder.content_tag(:h2, content: "Thank you for your message") +
+        HtmlBuilder.content_tag(:p, content: "Here is an overview of the information you submitted") +
+        HtmlBuilder.definition_list(
+          {
+            "Full name" => form_data["name"],
+            "Email address" => form_data["email"],  
+            "Website" => form_data["website"],
+            "Subject" => form_data["subject"],
+            "Message" => form_data["message"]
+          },
+          class: "form-submission-summary"
+        )
+        
+      end
+    end
+  end
+
   private
 
   def page_specific_styles(css)
@@ -68,12 +89,20 @@ class ContactPage < PageBuilder
     css.rule("button[type='reset']", color: "#b9bec8", background_color: "#334155", border: "2px solid #1e1e2e")
     css.rule("button[type='submit']:hover", background_color: "#c5ced7")
     css.rule("button[type='reset']:hover", background_color: "#4d4d5c")
+    css.rule(".form-submission-message", text_align: "center", padding: "1.5rem 2.5rem")
+    css.rule(".form-submission-summary", margin: "0 auto")
+    css.rule(".form-submission-summary", display: "grid", grid_template_columns: "1fr", max_width: "600px", align_items: "center")
+    css.rule(".form-submission-summary dt", margin_top: "1rem", font_weight: "500")
+    css.rule(".form-submission-summary dd", margin: "0")
+    css.media("min-width: 768px") do |mq|
+      mq.rule(".form-submission-summary", grid_template_columns: "1fr 1fr", row_gap: "1rem")
+      mq.rule(".form-submission-summary dt", margin: "0", font_weight: "500")
+    end
     css.media("min-width: 1024px") do |mq|
       mq.rule("fieldset", grid_template_columns: "1fr 1fr")
       mq.rule(".full-width", grid_column: "span 2")
       mq.rule(".btn-container", flex_direction: "row")
     end
-
     footer_css(css)
   end
 end
