@@ -37,9 +37,6 @@ end
 server = WEBrick::HTTPServer.new(Port: 3000)
 
 server.mount_proc '/' do |req, res|
-  if req.request_method == "POST"
-    p req.query
-  end
   status, content_type, body = router.resolve(method: req.request_method, path: req.path, params: req.query)
   res.status = status
   res['Content-Type'] = "#{content_type}; charset=utf-8"
