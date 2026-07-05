@@ -14,14 +14,14 @@ The reason why HtmlBuilder is a module and not a class comes down to the fact th
 3. **Router** - a class that maps the HTTP request paths to page-generating methods. It is instantiated inside the server.rb file which servers as the entry point to our application. The router instance holds the instance variable @routes. In the server.rb file we add the paths for each page, along with the respective request methods by calling 'router.add_route(method: "GET", path: "/"). The '#add_route' method also accepts a block which is assigned as a value to the key "#{method} #{path}". This block is then executed inside the '#resolve' method. 
 
 ## Undestanding the HTTP request-response cycle
-This project was an incredibly valuable learning experience that really deepened by understanding of how HTTP works at a fundamental level. Below I explain in 3 steps the HTTP request-response lifecycle.
+This project was an incredibly valuable learning experience that really deepened by understanding of how HTTP works at a fundamental level. Below I explain in 3 steps the HTTP request-response lifecycle in our application. 
 
 1. **Listening** - When we run 'ruby server.rb' WEBrick::HTTPServer.new(Port: 3000) opens up a TCP socket on the local computer and starts listening for any incoming network requests.
 When a user opens 'http://localhost:3000 in the browser, WEBrick intercepts the request, parses it, and wraps it into a Ruby request object (req). In the server.rb file we wrote 'server.mount_proc '/' do |req, res|'. This sets up the catch-all mount processor which catches every single request that hits that block of code. 
 
 2. **Routing** - Inside that block, server.rb grabs the request method (GET) and the path (/about), and hands them over to the router.
 
-Inside 'Router#resolve' the router combines the method and path into a single lookup string: "GET /about". It looks inside its @routes dictionary to see if a block of code matches that key. If it finds a match it executes the code block (in our example { home_page.render }).
+Inside 'Router#resolve' the router combines the method and path into a single lookup string: "GET /about". It looks inside its @routes dictionary to see if a block of code matches that key. If it finds a match it executes the code block (in our example { home_page.render }).If it doesn't find a match, it means the path is not valid and the 404 page is rendered. 
 
 3. **Response** - Once the router finishes processing, it returns a 3-element array to server.rb. This array contains the status code, content type(text/html or text/css) and the body payload. Server.rb takes those three pieces of information and maps them directly onto WEBrick's response object (res). WEBrick takes that res object, packs it back up into a raw HTTP text stream, and sends it back down the network socket to the user's browser which then displays the styled HTML page. 
 
