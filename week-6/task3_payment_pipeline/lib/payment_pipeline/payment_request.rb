@@ -2,7 +2,7 @@ module PaymentPipeline
   SUPPORTED_CURRENCIES = ["EUR", "USD", "GBP"]
 
   class PaymentRequest
-    attr_reader :masked_card, :card_number
+    attr_reader :masked_card, :amount
     
     def initialize(id:, amount:, currency:, card_number:, merchant:, metadata: nil)
       @id = id
@@ -14,6 +14,10 @@ module PaymentPipeline
       @card_number = card_number.to_s
       @masked_card = "****#{card_number.to_s.strip[-4..-1]}"
       
+    end
+
+    def internal_raw_card_number
+      @card_number
     end
 
     private

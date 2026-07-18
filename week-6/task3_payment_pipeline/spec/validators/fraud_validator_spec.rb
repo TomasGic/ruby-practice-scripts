@@ -1,13 +1,13 @@
 RSpec.describe PaymentPipeline::FraudValidator do
     let(:blacklist) { ["4000000000000002"] }
     let(:fraudulent_request) do
-      PaymentPipeline::PaymentRequest.new(
-        id: 12345,
-        amount: 40,
-        currency: "EUR",
-        card_number: 4000000000000002,
-        merchant: "Book store"
-      )
+        PaymentPipeline::PaymentRequest.new(
+          id: 12345,
+          amount: 40,
+          currency: "EUR",
+          card_number: 4000000000000002,
+          merchant: "Book store"
+        )
     end
     let(:good_request) do
       PaymentPipeline::PaymentRequest.new(
