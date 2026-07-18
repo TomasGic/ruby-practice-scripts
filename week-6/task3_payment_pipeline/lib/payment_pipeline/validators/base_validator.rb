@@ -16,26 +16,23 @@ module PaymentPipeline
       end
 
 
-      #we pass the validation on to the next handler if there is one
+      #if validation succeeds we pass the validation on to the next handler if there is one
       if @next_handler
-        @next_handler.validate(request)
+        return @next_handler.validate(request)
       end
-
-
-
-
+      
       #if earlier validation was successful or a given validator is unable to validate the request the method returns the hash below
       { valid: true }
     end
 
 
     def can_validate?(request)
-      raise NotImplementedError, "{self.cass} must implement #can_validate?"
+      raise NotImplementedError, "#{self.cass} must implement #can_validate?"
     end
 
 
     def perform_validation(request)
-      raise NotImplementedError, "{self.class} must implement #perform_validation"
+      raise NotImplementedError, "#{self.class} must implement #perform_validation"
     end
   end
 end

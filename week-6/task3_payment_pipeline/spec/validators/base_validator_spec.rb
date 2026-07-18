@@ -47,10 +47,6 @@ RSpec.describe PaymentPipeline::BaseValidator do
         result = @validator.validate(request)
         expect(result[:valid]).to be true
       end
-
-
-
-
     end
 
 
@@ -69,6 +65,18 @@ RSpec.describe PaymentPipeline::BaseValidator do
         expect(next_validator).not_to receive(:validate)
         result = chain.validate(failing_test_request)
         expect(result[:valid]).to be false
+      end
+
+      it "returns failure when first validation passes but the second one fails" do
+        allow(next_validator).to receive(:validate).and_return(
+          valid: false,
+          error: "Second validation failed",
+          validator: dummy_validator_class
+        )
+
+        result = chain.validate(passing_test_request)
+        expect(result[:valid]).to be false
+        expect(result[:error]).to eq("Second validation failed")
       end
     end
   end
