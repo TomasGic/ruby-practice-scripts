@@ -13,7 +13,7 @@ module PaymentPipeline
 
     def perform_validation(request)
       if @blacklist.include?(request.internal_raw_card_number)
-        { valid: false, error: "Fraudulent card detected", validator: self.class.name}
+        { valid: false, error: "Fraudulent card detected", validator: self.class.name.split("::").last}
       else 
         { valid: true }
       end

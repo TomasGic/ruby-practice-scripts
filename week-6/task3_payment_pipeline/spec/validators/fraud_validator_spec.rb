@@ -30,6 +30,7 @@ RSpec.describe PaymentPipeline::FraudValidator do
             result = validator.perform_validation(fraudulent_request)
             expect(result[:valid]).to be false
             expect(result[:error]).to eq("Fraudulent card detected")
+            expect(result[:validator]).to eq("FraudValidator")
         end
 
         it "returns success when card number is not in blacklist" do    

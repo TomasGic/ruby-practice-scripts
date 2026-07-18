@@ -11,7 +11,7 @@ module PaymentPipeline
 
     def perform_validation(request)
       if request.amount > @balance
-        { valid: false, error: "Validation failed: Insufficient funds", validator: self.class.name }
+        { valid: false, error: "Validation failed: Insufficient funds", validator: self.class.name.split("::").last }
       else 
         { valid: true }
       end

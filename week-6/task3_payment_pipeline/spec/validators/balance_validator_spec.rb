@@ -16,6 +16,7 @@ RSpec.describe PaymentPipeline::BalanceValidator do
       result = validator.perform_validation(failing_request)
       expect(result[:valid]).to be false
       expect(result[:error]).to eq("Validation failed: Insufficient funds")
+      expect(result[:validator]).to eq("BalanceValidator")
     end
   end
 end
