@@ -54,7 +54,7 @@ RSpec.describe PaymentPipeline::BaseValidator do
       let(:next_validator) { dummy_validator_class.new }
       let(:chain) { dummy_validator_class.new(next_handler: next_validator) }
       it "passes the request on to the next handler if the first handler validates the request" do
-        expect(next_validator).to receive(:validate).and_call_original
+        expect(next_validator).to receive(:validate).with(passing_test_request).and_call_original
         result = chain.validate(passing_test_request)
         expect(result[:valid]).to be true
       end
