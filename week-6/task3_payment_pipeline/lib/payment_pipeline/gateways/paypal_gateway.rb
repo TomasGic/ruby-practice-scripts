@@ -1,5 +1,5 @@
 module PaymentPipeline
-  class PaymentGateway
+  class PaypalGateway
     def send_payment(amount_str:, currency:, reference:)
       { confirmation: "ST-#{rand(1000)}", status: "succeeded", error: nil }
     end

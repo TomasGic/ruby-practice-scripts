@@ -25,7 +25,7 @@ RSpec.describe PaymentPipeline::StripeAdapter do
 
         expect(result.success).to be false
         expect(result.transaction_id).to be_nil
-        expect(result.message).to eq("Connection timeout")
+        expect(result.message).to eq("Gateway error: Connection timeout")
       end
     end
   end

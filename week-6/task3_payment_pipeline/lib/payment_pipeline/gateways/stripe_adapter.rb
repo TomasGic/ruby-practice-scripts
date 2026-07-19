@@ -15,7 +15,11 @@ module PaymentPipeline
       )
     
     rescue => e 
-      PaymentResult.new(success: false, transaction_id: nil, message: e.message) 
+      PaymentResult.new(
+        success: false,
+        transaction_id: nil,
+        message: "Gateway error: #{e.message}"
+      )
     end
   end
 end
