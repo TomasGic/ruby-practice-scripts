@@ -1,18 +1,20 @@
 module Orders
   module Observable
-    attr_reader :observers
+    
+    def observers
+      @observers ||= []
+    end
     
     def add_observer(observer)
-      @observers ||= []
-      @observers << observer
+      observers << observer
     end
 
     def notify_observers(event:, data:)
-      (@observers || []).each do |obs|
+      observers.each do |observer|
         begin
-          obs.update(event, data)
+          observer.update(event, data)
         rescue => e
-          warn "Failed to update observer #{obs.class}: #{e.message}"
+          warn "Failed to update observer #{observer.class}: #{e.message}"
         end
       end
     end
