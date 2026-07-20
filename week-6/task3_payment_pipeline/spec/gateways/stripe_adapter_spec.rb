@@ -2,7 +2,7 @@ RSpec.describe PaymentPipeline::StripeAdapter do
   let(:stripe_gateway_mock) { instance_double("StripeGateway") }
   let(:adapter) { described_class.new(stripe_gateway: stripe_gateway_mock)}
   describe "#charge" do
-    context "when stripe gateway process the payment successfully" do
+    context "when stripe gateway processes the payment successfully" do
       it "returns the Payment Result object with correctly mapped data" do
         expect(stripe_gateway_mock).to receive(:process_charge)
         .with(cents: 5000, currency_code: "EUR", token: "tok-123")
