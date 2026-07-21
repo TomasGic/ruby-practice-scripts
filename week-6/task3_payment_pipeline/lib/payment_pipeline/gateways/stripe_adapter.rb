@@ -9,6 +9,7 @@ module PaymentPipeline
       response = @stripe_gateway.process_charge(cents: cents, currency_code: currency, token: card_token)
 
       PaymentResult.new(
+        gateway: "stripe",
         success: response[:ok],
         transaction_id: response[:confirmation],
         message: response[:reason] || "Stripe payment completed successfully"
@@ -16,6 +17,7 @@ module PaymentPipeline
     
     rescue => e 
       PaymentResult.new(
+        gateway: "stripe",
         success: false,
         transaction_id: nil,
         message: "Gateway error: #{e.message}"
