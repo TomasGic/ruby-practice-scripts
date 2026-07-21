@@ -5,7 +5,7 @@ module PaymentPipeline
         ========================================
                    PAYMENT RESULT DETAILS    
         ========================================
-        Status:         #{result.success}
+        Status:         #{result.success ? 'Success' : 'Failed'}
         Transaction ID: #{result.transaction_id || 'N/A'}
         Timestamp:      #{Time.now.strftime("%Y-%m-%d %H:%M:%S")}
         Message:        #{result.message}
