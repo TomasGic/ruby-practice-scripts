@@ -1,6 +1,6 @@
 module PaymentPipeline
   class StripeAdapter
-    def initialize(stripe_gateway:)
+    def initialize(stripe_gateway: StripeGateway.new)
       @stripe_gateway = stripe_gateway
     end
 

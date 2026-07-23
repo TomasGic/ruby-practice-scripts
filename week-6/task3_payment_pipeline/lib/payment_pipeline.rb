@@ -17,4 +17,5 @@ require_relative "payment_pipeline/observers/base_observer"
 require_relative "payment_pipeline/observers/audit_logger"
 require_relative "payment_pipeline/observers/notification_service"
 require_relative "payment_pipeline/observers/metrics_collector"
+require_relative "payment_pipeline/processor"
 

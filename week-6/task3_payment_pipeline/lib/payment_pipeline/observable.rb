@@ -1,4 +1,4 @@
-module Orders
+module PaymentPipeline
   module Observable
     
     def observers
@@ -9,7 +9,7 @@ module Orders
       observers << observer
     end
 
-    def notify_observers(event:, data:)
+    def notify_observers(event, data)
       observers.each do |observer|
         begin
           observer.update(event, data)

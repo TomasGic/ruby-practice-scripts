@@ -28,13 +28,13 @@ RSpec.describe PaymentPipeline::BaseValidator do
       before do
         @validator = dummy_validator_class.new
       end
-      it "returns success when validation passes" do
+      it "returns a success hash when validation passes" do
         result = @validator.validate(passing_test_request)
         expect(result[:valid]).to be true
       end
 
 
-      it "returns failure when validation fails" do
+      it "returns a failure hash when validation fails" do
         result = @validator.validate(failing_test_request)
         expect(result[:valid]).to be false
         expect(result[:error]).to eq("Validation failed")

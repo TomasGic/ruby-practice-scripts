@@ -12,8 +12,8 @@ RSpec.describe PaymentPipeline::PaymentGateway do
       described_class.instance_variable_set(:@providers, {})
     end
     it "returns the instance of StripeAdapter when stripe provider is passed" do
-      described_class.add_payment_provider(name: "stripe", adapter_class: PaymentPipeline::StripeGateway)
-      expect(described_class.for(provider: "stripe")).to be_a(PaymentPipeline::StripeGateway)
+      described_class.add_payment_provider(name: "stripe", adapter_class: PaymentPipeline::StripeAdapter)
+      expect(described_class.for(provider: "stripe")).to be_a(PaymentPipeline::StripeAdapter)
     end
 
     it "raises an error when we pass a payment provider that has not been registered yet" do
