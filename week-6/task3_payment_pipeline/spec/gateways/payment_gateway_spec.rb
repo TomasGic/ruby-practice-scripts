@@ -19,7 +19,7 @@ RSpec.describe PaymentPipeline::PaymentGateway do
     it "raises an error when we pass a payment provider that has not been registered yet" do
       expect{
         described_class.for(provider: "stripe")
-    }.to raise_error(RuntimeError, "Provider stripe not recognised")
+    }.to raise_error(PaymentPipeline::UnknownProviderError, "Provider stripe not recognised")
     end
   end
 end

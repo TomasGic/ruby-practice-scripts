@@ -12,7 +12,7 @@ module PaymentPipeline
     def self.for(provider:)
       provider = provider.to_sym
       adapter_class = @providers[provider]
-      raise "Provider #{provider} not recognised" unless adapter_class
+      raise UnknownProviderError, "Provider #{provider} not recognised" unless adapter_class
       adapter_class.new
     end
 
