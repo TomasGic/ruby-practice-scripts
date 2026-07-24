@@ -2,10 +2,12 @@ module PaymentPipeline
   SUPPORTED_CURRENCIES = ["EUR", "USD", "GBP"]
 
   class PaymentRequest
+    require 'securerandom'
+    
     attr_reader :id, :amount, :currency, :merchant, :metadata, :masked_card 
     
     def initialize(id:, amount:, currency:, card_number:, merchant:, metadata: nil)
-      @id = id
+      @id = id || SecureRandom.uuid
       @amount = amount
       @currency = currency.to_s.upcase.strip
       @merchant = merchant.to_s.strip
