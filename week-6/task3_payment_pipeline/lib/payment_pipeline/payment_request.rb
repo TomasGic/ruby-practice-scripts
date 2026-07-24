@@ -23,11 +23,14 @@ module PaymentPipeline
     private
 
     def validate!(card_number)
-      raise "Amount must be a positive number" unless @amount > 0
-      raise "Currency must be one of #{SUPPORTED_CURRENCIES.join(", ")}" unless SUPPORTED_CURRENCIES.include?(@currency)
+      raise InvalidAmountError, "Amount must be a positive number" unless @amount > 0
+      raise InvalidCurrencyError, "Currency must be one of #{SUPPORTED_CURRENCIES.join(", ")}" unless SUPPORTED_CURRENCIES.include?(@currency)
 
       clean_card_number = card_number.to_s.gsub(/\s+/, "")
-      raise "Card number must be exactly 16 digits" unless clean_card_number.match(/\A\d{16}\z/)
+      raise InvalidCardError, "Card number must be exactly 16 digits" unless clean_card_number.match(/\A\d{16}\z/)
+      if @merchant.empty? || @merchant.nil? 
+        raise InvalidMerchantError, "Merchant must be present"
+      end
     end
   end
 

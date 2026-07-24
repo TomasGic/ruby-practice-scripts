@@ -12,7 +12,7 @@ RSpec.describe PaymentPipeline::PaymentRequest do
     expect(request.masked_card).to eq("****5678")
   end
 
-  it "raises error when card number is not exactly 16 digits long" do
+  it "raises InvalidCardError when card number is not exactly 16 digits long" do
 
     expect {
       described_class.new(
@@ -22,6 +22,6 @@ RSpec.describe PaymentPipeline::PaymentRequest do
         card_number: 123456781234567,
         merchant: "Book Store"
       )
-  }.to raise_error(RuntimeError, "Card number must be exactly 16 digits")
+  }.to raise_error(PaymentPipeline::InvalidCardError, "Card number must be exactly 16 digits")
   end
 end
