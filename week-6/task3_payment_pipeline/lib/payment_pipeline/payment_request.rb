@@ -6,7 +6,7 @@ module PaymentPipeline
     
     attr_reader :id, :amount, :currency, :merchant, :metadata, :masked_card 
     
-    def initialize(id:, amount:, currency:, card_number:, merchant:, metadata: nil)
+    def initialize(id: nil, amount:, currency:, card_number:, merchant:, metadata: nil)
       @id = id || SecureRandom.uuid
       @amount = amount
       @currency = currency.to_s.upcase.strip
@@ -30,7 +30,7 @@ module PaymentPipeline
 
       clean_card_number = card_number.to_s.gsub(/\s+/, "")
       raise InvalidCardError, "Card number must be exactly 16 digits" unless clean_card_number.match(/\A\d{16}\z/)
-      if @merchant.empty? || @merchant.nil? 
+      if @merchant.nil? || @merchant.empty? 
         raise InvalidMerchantError, "Merchant must be present"
       end
     end

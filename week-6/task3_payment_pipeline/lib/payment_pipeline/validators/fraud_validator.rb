@@ -8,7 +8,7 @@ module PaymentPipeline
     end
 
     def can_validate?(request)
-      request.respond_to?(:card_number) && !request.internal_raw_card_number.nil?
+      request.respond_to?(:internal_raw_card_number) && !request.internal_raw_card_number.nil?
     end
 
     def perform_validation(request)

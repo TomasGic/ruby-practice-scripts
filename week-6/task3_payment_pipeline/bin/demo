@@ -1,0 +1,50 @@
+#!/usr/bin/env ruby
+
+# 1. we load the main program file
+require_relative '../lib/payment_pipeline'
+
+begin
+    request = PaymentPipeline::PaymentRequest.new(
+        amount: -45.50,
+        currency: "EUR",
+        merchant: "MediaMarkt",
+        card_number: "4000000000000002"
+    )
+
+    # --- Build the validation chain ---
+    blacklist = ["4000000000000002"]  # known test fraud card
+    chain = PaymentPipeline::FraudValidator.new(
+    blacklist: blacklist,
+    next_handler: PaymentPipeline::BalanceValidator.new(
+        balance: 500.00,
+        next_handler: PaymentPipeline::LimitValidator.new
+    )
+    )
+
+    #register gateway provider
+    PaymentPipeline::PaymentGateway.add_payment_provider(name: "stripe", adapter_class: PaymentPipeline::StripeAdapter)
+
+    # --- Build the gateway (Stripe adapter) --
+    gateway = PaymentPipeline::PaymentGateway.for(provider: :stripe)
+
+    # --- Build observers ---
+    audit   = PaymentPipeline::AuditLogger.new
+    metrics = PaymentPipeline::MetricsCollector.new
+    alerts  = PaymentPipeline::NotificationService.new
+
+    # --- Build the processor ---
+    processor = PaymentPipeline::Processor.new(
+    validator_chain: chain,
+    gateway: gateway,
+    formatter: PaymentPipeline::DetailedFormatter.new,
+    observers: [audit, metrics, alerts]
+    )
+
+    result = processor.process(request)
+
+    puts result
+
+rescue PaymentPipeline::Error => e
+puts "\n Validation Failed - #{e.class.name.split('::').last}: #{e.message}" 
+
+end
