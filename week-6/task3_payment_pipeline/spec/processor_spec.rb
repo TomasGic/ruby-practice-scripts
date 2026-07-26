@@ -11,6 +11,8 @@ RSpec.describe PaymentPipeline::Processor do
     )
   end
 
+  let(:mock_result) { double("PaymentResult", success: true, transaction_id: "ST-345667")}
+
   let(:validator_chain) do
     PaymentPipeline::FraudValidator.new(blacklist: [],
       next_handler: PaymentPipeline::BalanceValidator.new(balance: 20000,
@@ -39,19 +41,23 @@ RSpec.describe PaymentPipeline::Processor do
     it "notifies observers with events :payment_started, :validation_passed and :payment_succeeded" do
       observers.each do |observer|
         expect(observer).to receive(:update).with(
-          :payment_started, { request: request }
+          :payment_started, { request_id: request.id, amount: request.amount, merchant: request.merchant }
         ).ordered
       end
 
       observers.each do |observer|
         expect(observer).to receive(:update).with(
-          :validation_passed, { request: request, result: { valid: true } }
+          :validation_passed, { request_id: request.id }
         )
       end
 
+      allow(gateway).to receive(:charge).with(
+        amount: request.amount, currency: request.currency, card_token: request.masked_card
+      ).and_return(mock_result)
+
       observers.each do |observer|
         expect(observer).to receive(:update).with(
-          :payment_succeeded, { request: request, result: kind_of(PaymentPipeline::PaymentResult) }
+          :payment_succeeded, { request_id: request.id, amount: request.amount, transaction_id: mock_result.transaction_id }
         )
       end
       

@@ -19,7 +19,7 @@ RSpec.describe PaymentPipeline::StripeAdapter do
     context "when the stripe gateway encounters an error" do
       it "returns the PaymentResult object with an error message" do
         allow(stripe_gateway_mock).to receive(:process_charge)
-        .and_raise(StandardError.new("Connection timeout"))
+        .and_raise(PaymentPipeline::GatewayError.new("Connection timeout"))
 
         result = adapter.charge(amount: 50.00, currency: "USD", card_token: "tok_123")
 

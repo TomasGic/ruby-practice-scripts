@@ -29,7 +29,7 @@ RSpec.describe PaymentPipeline::FraudValidator do
             validator = described_class.new(blacklist: blacklist)
             result = validator.perform_validation(fraudulent_request)
             expect(result[:valid]).to be false
-            expect(result[:error]).to eq("Fraudulent card detected")
+            expect(result[:error]).to eq("Validation failed: Fraudulent card detected")
             expect(result[:validator]).to eq("FraudValidator")
         end
 

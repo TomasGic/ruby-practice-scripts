@@ -37,7 +37,7 @@ payments = [
   { amount: 49.99, currency: "EUR", card_number: "4111111111111111", merchant: "Book Store" },
   { amount: 49.99, currency: "USD", card_number: "4000000000000002", merchant: "Shady Shop" },  # fraud
   { amount: 999.99, currency: "GBP", card_number: "5500000000000004", merchant: "Electronics" }, # over balance
-  { amount: 15000.00, currency: "USD", card_number: "4111111111111111", merchant: "Luxury Items" }, # over limit
+  { amount: -2349.99, currency: "USD", card_number: "4111111111111111", merchant: "Luxury Items" }, # negative amount
 ]
 
 payments.each_with_index do |data, i|
@@ -50,7 +50,7 @@ payments.each_with_index do |data, i|
         result = processor.process(request)
         puts result
     rescue PaymentPipeline::Error => e
-        puts "\n Validation Failed - #{e.class.name.split('::').last}: #{e.message}" 
+        puts "\n Payment processing failed - #{e.class.name.split('::').last}: #{e.message}" 
     end
 end
 
