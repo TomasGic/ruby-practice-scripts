@@ -20,7 +20,7 @@ RSpec.describe PaymentPipeline::PaypalAdapter do
     context "when the paypal gateway encounters an error" do
       it "returns the PaymentResult object with an error message" do
         allow(paypal_gateway_mock).to receive(:send_payment)
-        .and_raise(StandardError.new("Connection timeout"))
+        .and_raise(PaymentPipeline::GatewayTimeoutError.new("Connection timeout"))
 
         result = adapter.charge(amount: 50, currency: "EUR", card_token: "tok-123")
         expect(result.success).to be false

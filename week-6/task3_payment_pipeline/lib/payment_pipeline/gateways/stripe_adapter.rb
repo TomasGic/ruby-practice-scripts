@@ -15,7 +15,7 @@ module PaymentPipeline
         message: response[:reason] || "Stripe payment completed successfully"
       )
     
-    rescue => e 
+    rescue GatewayError => e 
       PaymentResult.new(
         gateway: "stripe",
         success: false,

@@ -14,7 +14,7 @@ module PaymentPipeline
         message: response[:error] || "Paypal payment completed successfully"
         
       )
-    rescue => e
+    rescue GatewayError => e
       PaymentResult.new(
         gateway: "paypal",
         success: false,
