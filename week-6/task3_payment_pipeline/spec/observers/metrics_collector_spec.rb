@@ -15,8 +15,8 @@ RSpec.describe PaymentPipeline::MetricsCollector do
     it "correctly stores the number of successful and failed payments" do
       metrics_collector.update(failure_event, failure_data)
       metrics_collector.update(success_event, success_data)
-      expect(metrics_collector.successful_payments).to eq(1)
-      expect(metrics_collector.failed_payments).to eq(1)
+      expect(metrics_collector.success_count).to eq(1)
+      expect(metrics_collector.failure_count).to eq(1)
 
     end
   end

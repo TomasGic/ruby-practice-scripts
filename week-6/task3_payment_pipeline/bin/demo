@@ -3,48 +3,67 @@
 # 1. we load the main program file
 require_relative '../lib/payment_pipeline'
 
-begin
-    request = PaymentPipeline::PaymentRequest.new(
-        amount: -45.50,
-        currency: "EUR",
-        merchant: "MediaMarkt",
-        card_number: "4000000000000002"
-    )
-
-    # --- Build the validation chain ---
-    blacklist = ["4000000000000002"]  # known test fraud card
-    chain = PaymentPipeline::FraudValidator.new(
+# --- Build the validation chain ---
+blacklist = ["4000000000000002"]  # known test fraud card
+chain = PaymentPipeline::FraudValidator.new(
     blacklist: blacklist,
     next_handler: PaymentPipeline::BalanceValidator.new(
         balance: 500.00,
         next_handler: PaymentPipeline::LimitValidator.new
     )
-    )
+)
 
-    #register gateway provider
-    PaymentPipeline::PaymentGateway.add_payment_provider(name: "stripe", adapter_class: PaymentPipeline::StripeAdapter)
+#register gateway provider
+PaymentPipeline::PaymentGateway.add_payment_provider(name: "stripe", adapter_class: PaymentPipeline::StripeAdapter)
 
-    # --- Build the gateway (Stripe adapter) --
-    gateway = PaymentPipeline::PaymentGateway.for(provider: :stripe)
+# --- Build the gateway (Stripe adapter) --
+gateway = PaymentPipeline::PaymentGateway.for(provider: :stripe)
 
-    # --- Build observers ---
-    audit   = PaymentPipeline::AuditLogger.new
-    metrics = PaymentPipeline::MetricsCollector.new
-    alerts  = PaymentPipeline::NotificationService.new
+# --- Build observers ---
+audit   = PaymentPipeline::AuditLogger.new
+metrics = PaymentPipeline::MetricsCollector.new
+alerts  = PaymentPipeline::NotificationService.new
 
-    # --- Build the processor ---
-    processor = PaymentPipeline::Processor.new(
-    validator_chain: chain,
-    gateway: gateway,
-    formatter: PaymentPipeline::DetailedFormatter.new,
-    observers: [audit, metrics, alerts]
-    )
+# --- Build the processor ---
+processor = PaymentPipeline::Processor.new(
+validator_chain: chain,
+gateway: gateway,
+formatter: PaymentPipeline::DetailedFormatter.new,
+observers: [audit, metrics, alerts]
+)
 
-    result = processor.process(request)
+# --- Process payments ---
+payments = [
+  { amount: 49.99, currency: "EUR", card_number: "4111111111111111", merchant: "Book Store" },
+  { amount: 49.99, currency: "USD", card_number: "4000000000000002", merchant: "Shady Shop" },  # fraud
+  { amount: 999.99, currency: "GBP", card_number: "5500000000000004", merchant: "Electronics" }, # over balance
+  { amount: 15000.00, currency: "USD", card_number: "4111111111111111", merchant: "Luxury Items" }, # over limit
+]
 
-    puts result
+payments.each_with_index do |data, i|
+    puts "\n#{'=' * 50}"
+    puts "PAYMENT #{i + 1}: $#{'%.2f' % data[:amount]} #{data[:currency]} → #{data[:merchant]}"
+    puts '=' * 50
 
-rescue PaymentPipeline::Error => e
-puts "\n Validation Failed - #{e.class.name.split('::').last}: #{e.message}" 
-
+    begin
+        request = PaymentPipeline::PaymentRequest.new(**data)
+        result = processor.process(request)
+        puts result
+    rescue PaymentPipeline::Error => e
+        puts "\n Validation Failed - #{e.class.name.split('::').last}: #{e.message}" 
+    end
 end
+
+#Inspect observer state
+puts "\n#{'=' * 50}"
+puts "AUDIT LOG (#{audit.events.size} events):"
+audit.events.each { |e| puts "  [#{e[:event]}] #{e[:data]}" }
+
+puts "\nMETRICS:"
+puts "  Successes: #{metrics.success_count}"
+puts "  Failures:  #{metrics.failure_count}"
+
+puts "\nALERTS (failures only):"
+alerts.events.each { |e| puts "  #{e[:event]} — #{e[:data]}" }
+
+
