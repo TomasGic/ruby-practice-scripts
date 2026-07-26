@@ -1,7 +1,4 @@
 module Orders
-  class EmptyOrderError < StandardError; end
-  class AlreadyCompletedError < StandardError; end
-  class InvalidQuantityError < StandardError; end
   
   class Order
     include Observable

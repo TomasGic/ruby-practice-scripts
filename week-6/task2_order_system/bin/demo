@@ -2,47 +2,53 @@
 
 require_relative "../lib/order_system"
 
-# --- Step 1: Create products ---
-book = Orders::Product.new(name: "Clean Code", price: 34.99)
-keyboard = Orders::Product.new(name: "Mechanical Keyboard", price: 89.99)
+begin 
+  # --- Step 1: Create products ---
+  book = Orders::Product.new(name: "Clean Code", price: 34.99)
+  keyboard = Orders::Product.new(name: "Mechanical Keyboard", price: 89.99)
 
-puts "=== Products ==="
-puts "#{book.name}: $#{'%.2f' % book.price}"
-puts "#{keyboard.name}: $#{'%.2f' % keyboard.price}"
-puts
+  puts "=== Products ==="
+  puts "#{book.name}: $#{'%.2f' % book.price}"
+  puts "#{keyboard.name}: $#{'%.2f' % keyboard.price}"
+  puts
 
-# --- Step 2: Decorate products ---
-wrapped_book = Orders::GiftWrapDecorator.new(book)
-insured_keyboard = Orders::InsuranceDecorator.new(
-  Orders::ExpressShippingDecorator.new(keyboard)
-)
+  # --- Step 2: Decorate products ---
+  wrapped_book = Orders::GiftWrapDecorator.new(book)
+  insured_keyboard = Orders::InsuranceDecorator.new(
+    Orders::ExpressShippingDecorator.new(keyboard)
+  )
 
-puts "=== Decorated ==="
-puts "#{wrapped_book.name}: $#{'%.2f' % wrapped_book.price}"
-puts "#{insured_keyboard.name}: $#{'%.2f' % insured_keyboard.price}"
-puts
+  puts "=== Decorated ==="
+  puts "#{wrapped_book.name}: $#{'%.2f' % wrapped_book.price}"
+  puts "#{insured_keyboard.name}: $#{'%.2f' % insured_keyboard.price}"
+  puts
 
-# --- Step 3: Create order and register observers ---
-email = Orders::EmailNotifier.new
-inventory = Orders::InventoryManager.new
-analytics = Orders::AnalyticsTracker.new
+  # --- Step 3: Create order and register observers ---
+  email = Orders::EmailNotifier.new
+  inventory = Orders::InventoryManager.new
+  analytics = Orders::AnalyticsTracker.new
 
-order = Orders::Order.new
-order.add_observer(email)
-order.add_observer(inventory)
-order.add_observer(analytics)
+  order = Orders::Order.new
+  order.add_observer(email)
+  order.add_observer(inventory)
+  order.add_observer(analytics)
 
-# --- Step 4: Add items ---
-order.add_item(product: wrapped_book, quantity: 1)
-order.add_item(product: insured_keyboard, quantity: 2)
+  # --- Step 4: Add items ---
+  order.add_item(product: wrapped_book, quantity: 0)
+  order.add_item(product: insured_keyboard, quantity: 2)
 
-puts "=== Order ==="
-puts "Items: #{order.item_count}"
-puts "Total: $#{'%.2f' % order.total}"
-puts
+  puts "=== Order ==="
+  puts "Items: #{order.item_count}"
+  puts "Total: $#{'%.2f' % order.total}"
+  puts
 
-# --- Step 5: Complete the order ---
-order.complete!
+  # --- Step 5: Complete the order ---
+  order.complete!
+rescue Orders::Error => e
+  puts "\n Order processing failed - #{e.class.name.split('::').last}: #{e.message}"
+  exit 1
+end
+
 
 puts "=== Observer State ==="
 puts "Email notifications:"

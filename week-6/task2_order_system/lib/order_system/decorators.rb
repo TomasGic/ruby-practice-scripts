@@ -1,7 +1,5 @@
 module Orders
 
-  class DuplicateDecoratorError < StandardError; end
-  
   class ProductDecorator
     attr_reader :product
     def initialize(product)
