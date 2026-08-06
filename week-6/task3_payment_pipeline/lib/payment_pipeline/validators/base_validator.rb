@@ -27,7 +27,7 @@ module PaymentPipeline
 
 
     def can_validate?(request)
-      raise NotImplementedError, "#{self.cass} must implement #can_validate?"
+      raise NotImplementedError, "#{self.class} must implement #can_validate?"
     end
 
 
