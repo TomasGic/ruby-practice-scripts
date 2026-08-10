@@ -4,7 +4,7 @@ module PaymentPipeline
       @providers ||= {}
     end
     
-    def self.add_payment_provider(name:, adapter_class:)
+    def self.add_payment_provider(name:, adapter_class: self)
       name = name.to_sym
       providers[name] = adapter_class
     end

@@ -14,7 +14,7 @@ chain = PaymentPipeline::FraudValidator.new(
 )
 
 #register gateway provider
-PaymentPipeline::PaymentGateway.add_payment_provider(name: "stripe", adapter_class: PaymentPipeline::StripeAdapter)
+# PaymentPipeline::PaymentGateway.add_payment_provider(name: "stripe", adapter_class: PaymentPipeline::StripeAdapter)
 
 # --- Build the gateway (Stripe adapter) --
 gateway = PaymentPipeline::PaymentGateway.for(provider: :stripe)

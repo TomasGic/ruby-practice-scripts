@@ -1,5 +1,7 @@
 module PaymentPipeline
-  class StripeAdapter
+  class StripeAdapter < PaymentGateway
+    PaymentGateway.add_payment_provider(name: "stripe", adapter_class: self)
+    
     def initialize(stripe_gateway: StripeGateway.new)
       @stripe_gateway = stripe_gateway
     end
