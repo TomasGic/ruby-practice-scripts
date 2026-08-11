@@ -6,7 +6,7 @@ module PaymentPipeline
     end
 
     def can_validate?(request)
-      true
+      request.respond_to?(:amount) && !request.amount.nil?
     end
 
     def perform_validation(request)

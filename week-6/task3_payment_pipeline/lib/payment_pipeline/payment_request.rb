@@ -14,7 +14,7 @@ module PaymentPipeline
       @metadata = metadata
       validate!(card_number)
       @card_number = card_number.to_s
-      @masked_card = "****#{card_number.to_s.strip[-4..-1]}"
+      @masked_card = "****#{@card_number.strip[-4..-1]}"
       
     end
 
