@@ -23,3 +23,12 @@ Our program uses the factory method pattern to encapsulate the logic of creating
 The `PaymentGateway` class also implements `.add_payment_provider` which dynamically registers a payment provider in the providers hash (`@providers`). Instead of registering the provider at runtime in our client code, we encapsulate the registration inside each adapter class by adding `PaymentGateway.add_payment_provider(name: "stripe", adapter_class: self)` at the top of the `StripeAdapter` class and `PaymentGateway.add_payment_provider(name: "paypal", adapter_class: self)` at the top of the `PaypalAdapter` class. This works because Ruby executes the code inside the class block as soon as the file where the class lives is evaluated. In this way, we do not have to add the provider at runtime and if we introduce a new payment provider into our program, we simply create a new file with the new adapter class and require it - no changes to `PaymentGateway` class are needed.  
 
  When we call `PaymentGateway.for(provider: "stripe")` the factory method looks up the specific provider type in the providers hash and returns the correct instance of the adapter class. 
+
+ ## Running the demo
+ To see the payment pipeline in action you can run the program by running `bin/demo` from the root project directory in your terminal.
+
+ ## Running tests
+ In the root project directory simply run the following command: 
+ `bundler exec rspec`
+
+ This will execute all tests.
