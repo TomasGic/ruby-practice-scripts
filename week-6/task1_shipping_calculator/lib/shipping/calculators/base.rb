@@ -50,6 +50,18 @@ module Shipping
       "Validating package: #{package.weight}kg, zone: #{package.zone}"
     end
 
+    def compute_base_rate(package)
+      raise NotImplementedError, "#{self.class} must implement #compute_base_rate"
+    end
+
+    def apply_surcharges(package)
+      raise NotImplementedError, "#{self.class} must implement #apply_surcharges"
+    end
+
+    def apply_discount(package)
+      raise NotImplementedError, "#{self.class} must implement #apply_discount"
+    end
+
     def build_result(base_rate:, surcharge:, discount:, total:)
       { 
         base_rate: base_rate,
