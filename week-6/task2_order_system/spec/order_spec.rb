@@ -161,12 +161,13 @@ RSpec.describe Orders::Order do
 
   describe "#add_observer" do
     it "adds observer objects to the @observers array" do
-      observer1 = Object.new
-      observer2 = Object.new
-      order.add_observer(observer1)
-      order.add_observer(observer2)
+      observers = [double("Observer", update: nil), double("Observer", update: nil)]
+      observers.each do |obs|
+        allow(obs).to receive(:update)
+        order.add_observer(obs)
+      end
 
-      expect(order.observers).to include(observer1, observer2)
+      expect(order.observers).to include(observers[0], observers[1])
     end
   end
 end   
