@@ -39,6 +39,12 @@ RSpec.describe Orders::Order do
     }.to raise_error(Orders::InvalidQuantityError)
     end
 
+    it "raises InvalidQuantityError when quantity is passed as string" do
+      expect {
+        order.add_item(product: book, quantity: "5")
+      }.to raise_error(Orders::InvalidQuantityError, "Quantity must be a positive integer.")
+    end
+
     it "notifies email observer with :item_added and :order_completed event and correct data" do
       order.add_observer(email_notifier)
 

@@ -10,7 +10,9 @@ module Orders
     end
 
     def add_item(product:, quantity:)
-      raise InvalidQuantityError, "Quantity cannot be negative or zero" if quantity <= 0
+      unless quantity.is_a?(Integer) && quantity > 0
+        raise InvalidQuantityError, "Quantity must be a positive integer."
+      end 
       raise AlreadyCompletedError, "Cannot add items to already completed order" if @completed
       item = { product_name: product.name, count: quantity, total_price: product.price * quantity }
       @items << item
