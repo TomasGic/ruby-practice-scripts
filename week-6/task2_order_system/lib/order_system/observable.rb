@@ -6,6 +6,9 @@ module Orders
     end
     
     def add_observer(observer)
+      unless observer.respond_to?(:update)
+        raise InvalidObserverError, "Observer must respond to #update."
+      end
       observers << observer
     end
 

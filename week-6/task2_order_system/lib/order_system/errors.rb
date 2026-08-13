@@ -5,5 +5,6 @@ module Orders
   class InvalidQuantityError < Error; end
   class DuplicateDecoratorError < Error; end
   class InvalidPriceError < Error; end
+  class InvalidObserverError < Error; end
 end
 
