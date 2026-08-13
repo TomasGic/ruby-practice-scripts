@@ -17,12 +17,17 @@ This is a small object-oriented Ruby project that implements a shipping calculat
  ## Loggable module
  In our system we use the Loggable module to define a consistent log method for each calculator. We could have also defined log method inside our base calculator class, but moving the logging behaviour inside a separate module makes the project more professional and easier to scale in case we want to add more classes that would need to implement a logging functionality. 
 
+ ## Requirements
+ Ruby: 3.4.7
+ Bundler: 2.6.9
+
  ## Running the demo
  To see the calculators in action you can run the program by running bin/demo from the root project directory in your terminal.
 
  ## Running tests
- In the root project directory simply run the following command: 
- bundler exec rspec
+ In the root project directory simply run the following commands:
+ bundle install 
+ bundle exec rspec
 
  This will execute all tests.
 
