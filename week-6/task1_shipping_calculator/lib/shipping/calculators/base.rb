@@ -26,7 +26,7 @@ module Shipping
 
     def calculate(package)
       
-      log validate_package(package)
+      log package_summary(package)
       
       base_rate = compute_base_rate(package)
       log "Base rate: #{currency}#{'%.2f' % base_rate}"
@@ -46,7 +46,7 @@ module Shipping
 
     private 
 
-    def validate_package(package)
+    def package_summary(package)
       "Validating package: #{package.weight}kg, zone: #{package.zone}"
     end
 
