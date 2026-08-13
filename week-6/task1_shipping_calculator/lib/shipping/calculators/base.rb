@@ -9,10 +9,12 @@ module Shipping
     end
 
     def self.register_carrier(carrier:, klass: self)
+      carrier = carrier.to_s.strip.downcase.to_sym
       registry[carrier] = klass
     end
     
     def self.for(carrier:)
+      carrier = carrier.to_s.strip.downcase.to_sym
       klass = registry[carrier]
       raise UnknownCarrierError, "Carrier #{carrier} not recognized" unless klass
       klass.new
