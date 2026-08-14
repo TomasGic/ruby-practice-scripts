@@ -1,5 +1,9 @@
 module PaymentPipeline
   class MetricsCollector < BaseObserver
+
+    SUCCESS_EVENTS = [:payment_succeeded].freeze
+    FAILURE_EVENTS = [:validation_failed, :payment_failed]
+    
     attr_reader :success_count, :failure_count
     
     def initialize
@@ -10,11 +14,8 @@ module PaymentPipeline
 
     def update(event, data)
       super(event, data)
-      if event.to_s.include?("failed")
-        @failure_count += 1
-      elsif event.to_s.include?("passed") || event.to_s.include?("succeeded")
-        @success_count += 1
-      end
+      @failure_count += 1 if FAILURE_EVENTS.include?(event)
+      @success_count += 1 if SUCCESS_EVENTS.include?(event)
     end
   end
 end

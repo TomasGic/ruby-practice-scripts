@@ -1,7 +1,7 @@
 RSpec.describe PaymentPipeline::MetricsCollector do
   let(:metrics_collector) { described_class.new }
-  let(:failure_event) { :validation_failed }
-  let(:success_event) { :validation_passed }
+  let(:failure_event) { :payment_failed }
+  let(:success_event) { :payment_succeeded }
   let(:failure_data) do
     {
       request_id: "123abc",
