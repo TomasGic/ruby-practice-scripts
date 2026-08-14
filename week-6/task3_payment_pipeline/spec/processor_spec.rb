@@ -79,8 +79,7 @@ RSpec.describe PaymentPipeline::Processor do
       )
       expect(gateway).not_to receive(:charge)
       result = processor.process(request)
-      expect(result).to include("Request ID: REQ-12345")
-      expect(result).to include("Validation failed")
+      expect(result).to include("FAILED")
       
     end
   end

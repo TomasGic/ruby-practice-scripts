@@ -14,14 +14,7 @@ module PaymentPipeline
       validation_result = @validator_chain.validate(request)
 
       unless validation_result[:valid]
-        notify_observers(:validation_failed, { request_id: request.id, error: validation_result[:error], validator: validation_result[:validator] })
-        return <<~OUTPUT
-          Request ID: #{request.id}
-          Amount: #{'%.2f' % request.amount} #{request.currency}
-          Card: #{request.masked_card}
-          Message: #{validation_result[:error]}
-          Validated by: #{validation_result[:validator]}
-        OUTPUT
+        return output_validation_failure(request, validation_result)
       end
 
       notify_observers(:validation_passed, { request_id: request.id })
@@ -35,6 +28,21 @@ module PaymentPipeline
       end
       
       @formatter.format(request, payment_result)
+    end
+
+    private 
+
+    def output_validation_failure(request, validation_result)
+      notify_observers(:validation_failed, { request_id: request.id, error: validation_result[:error], validator: validation_result[:validator] })
+      @formatter.format(
+        request,
+        PaymentResult.new(
+          gateway: "none",
+          success: false,
+          transaction_id: nil,
+          message: validation_result[:error]
+        )
+      )
     end
   end
 end
