@@ -8,11 +8,11 @@ module PaymentPipeline
     end
 
     def can_validate?(request)
-      request.respond_to?(:internal_raw_card_number) && !request.internal_raw_card_number.nil?
+      request.respond_to?(:card_fingerprint) && !request.card_fingerprint.nil?
     end
 
     def perform_validation(request)
-      if @blacklist.include?(request.internal_raw_card_number)
+      if @blacklist.include?(request.card_fingerprint)
         { valid: false, error: "Validation failed: Fraudulent card detected", validator: self.class.name.split("::").last}
       else 
         { valid: true }

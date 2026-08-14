@@ -3,6 +3,7 @@ module PaymentPipeline
 
   class PaymentRequest
     require 'securerandom'
+    require 'digest'
     
     attr_reader :id, :amount, :currency, :merchant, :metadata, :masked_card 
     
@@ -12,24 +13,24 @@ module PaymentPipeline
       @currency = currency.to_s.upcase.strip
       @merchant = merchant.to_s.strip
       @metadata = metadata
-      validate!(card_number)
-      @card_number = card_number.to_s
+      @card_number = card_number.to_s.gsub(/\s+/, "")
+      validate!
       @masked_card = "****#{@card_number.strip[-4..-1]}"
       
     end
 
-    def internal_raw_card_number
-      @card_number
+    def card_fingerprint
+      Digest::SHA256.hexdigest(@card_number)
     end
 
     private
 
-    def validate!(card_number)
+    attr_reader :card_number
+
+    def validate!
       raise InvalidAmountError, "Amount must be a positive number" unless @amount > 0
       raise InvalidCurrencyError, "Currency must be one of #{SUPPORTED_CURRENCIES.join(", ")}" unless SUPPORTED_CURRENCIES.include?(@currency)
-
-      clean_card_number = card_number.to_s.gsub(/\s+/, "")
-      raise InvalidCardError, "Card number must be exactly 16 digits" unless clean_card_number.match(/\A\d{16}\z/)
+      raise InvalidCardError, "Card number must be exactly 16 digits" unless @card_number.match(/\A\d{16}\z/)
       if @merchant.nil? || @merchant.empty? 
         raise InvalidMerchantError, "Merchant must be present"
       end
