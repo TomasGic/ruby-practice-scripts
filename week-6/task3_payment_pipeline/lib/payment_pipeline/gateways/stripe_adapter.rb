@@ -12,9 +12,9 @@ module PaymentPipeline
 
       PaymentResult.new(
         gateway: "stripe",
-        success: response[:ok],
-        transaction_id: response[:confirmation],
-        message: response[:reason] || "Stripe payment completed successfully"
+        success: response[:status] == "succeeded",
+        transaction_id: response[:id],
+        message: response[:error] || "Stripe payment completed successfully"
       )
     
     rescue GatewayError => e 

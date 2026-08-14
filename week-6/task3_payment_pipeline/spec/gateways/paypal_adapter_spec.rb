@@ -7,7 +7,7 @@ RSpec.describe PaymentPipeline::PaypalAdapter do
       it "returns the PaymentResult object with correctly mapped data" do
         expect(paypal_gateway_mock).to receive(:send_payment)
         .with(amount_str: "50", currency: "EUR", reference: "tok-123")
-        .and_return({ confirmation: "PP-123", status: "succeeded", error: nil })
+        .and_return({ confirmation: "PP-123", ok: true, reason: nil })
 
         result = adapter.charge(amount: 50, currency: "EUR", card_token: "tok-123")
 

@@ -2,7 +2,7 @@ module PaymentPipeline
   class PaypalAdapter < PaymentGateway
     PaymentGateway.add_payment_provider(name: "paypal", adapter_class: self)
     
-    def initialize(paypal_gateway:)
+    def initialize(paypal_gateway: PaypalGateway.new)
       @paypal_gateway = paypal_gateway
     end
 
@@ -11,9 +11,9 @@ module PaymentPipeline
 
       PaymentResult.new(
         gateway: "paypal",
-        success: response[:status] == "succeeded" ? true : false,
+        success: response[:ok],
         transaction_id: response[:confirmation],
-        message: response[:error] || "Paypal payment completed successfully"
+        message: response[:reason] || "Paypal payment completed successfully"
         
       )
     rescue GatewayError => e

@@ -1,7 +1,8 @@
 module PaymentPipeline
   class StripeGateway
+    require 'securerandom'
     def process_charge(cents:, currency_code:, token:)
-      { confirmation: "ST-#{rand(1000)}", ok: true, reason: nil }
+      { id: "ch-#{SecureRandom.hex(6)}", status: "succeeded", error: nil }
     end
   end
 end

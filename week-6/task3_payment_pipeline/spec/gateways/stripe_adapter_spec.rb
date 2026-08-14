@@ -6,7 +6,7 @@ RSpec.describe PaymentPipeline::StripeAdapter do
       it "returns the Payment Result object with correctly mapped data" do
         expect(stripe_gateway_mock).to receive(:process_charge)
         .with(cents: 5000, currency_code: "EUR", token: "tok-123")
-        .and_return({ confirmation: "ST-123", ok: true, reason: nil })
+        .and_return({ id: "ST-123", status: "succeeded", error: nil })
 
         result = adapter.charge(amount: 50.00, currency: "EUR", card_token: "tok-123")
 
