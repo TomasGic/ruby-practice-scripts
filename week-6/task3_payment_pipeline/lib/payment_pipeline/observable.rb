@@ -9,7 +9,7 @@ module PaymentPipeline
       observers << observer
     end
 
-    def notify_observers(event, data)
+    def notify_observers(event:, data:)
       observers.each do |observer|
         begin
           observer.update(event, data)
