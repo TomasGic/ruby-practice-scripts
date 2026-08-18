@@ -1,7 +1,9 @@
 module PaymentPipeline
-  class StripeAdapter < PaymentGateway
+  class StripeAdapter 
     require 'bigdecimal'
     require 'bigdecimal/util'
+
+    include GatewayInterface
     
     PaymentGateway.add_payment_provider(name: "stripe", adapter_class: self)
     

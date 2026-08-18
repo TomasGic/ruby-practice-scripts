@@ -1,5 +1,7 @@
 module PaymentPipeline
-  class PaypalAdapter < PaymentGateway
+  class PaypalAdapter
+    include GatewayInterface
+    
     PaymentGateway.add_payment_provider(name: "paypal", adapter_class: self)
     
     def initialize(paypal_gateway: PaypalGateway.new)
