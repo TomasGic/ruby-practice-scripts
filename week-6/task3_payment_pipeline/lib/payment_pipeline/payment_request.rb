@@ -36,5 +36,4 @@ module PaymentPipeline
       end
     end
   end
-
 end

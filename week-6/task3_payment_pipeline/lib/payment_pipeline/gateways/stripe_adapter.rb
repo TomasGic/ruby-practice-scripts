@@ -1,5 +1,8 @@
 module PaymentPipeline
   class StripeAdapter < PaymentGateway
+    require 'bigdecimal'
+    require 'bigdecimal/util'
+    
     PaymentGateway.add_payment_provider(name: "stripe", adapter_class: self)
     
     def initialize(stripe_gateway: StripeGateway.new)
@@ -7,7 +10,7 @@ module PaymentPipeline
     end
 
     def charge(amount:, currency:, card_token:)
-      cents = (amount * 100).to_i
+      cents = (amount.to_d * 100).to_i
       response = @stripe_gateway.process_charge(cents: cents, currency_code: currency, token: card_token)
 
       PaymentResult.new(

@@ -1,5 +1,5 @@
 RSpec.describe PaymentPipeline::FraudValidator do
-    let(:blacklist) { ["4000000000000002"] }
+    let(:blacklist) { [Digest::SHA256.hexdigest("4000000000000002")] }
     let(:fraudulent_request) do
         PaymentPipeline::PaymentRequest.new(
           id: 12345,
