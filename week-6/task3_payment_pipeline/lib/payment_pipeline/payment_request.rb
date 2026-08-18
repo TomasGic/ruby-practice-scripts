@@ -28,7 +28,7 @@ module PaymentPipeline
     attr_reader :card_number
 
     def validate!
-      raise InvalidAmountError, "Amount must be a positive number" unless @amount > 0
+      raise InvalidAmountError, "Amount must be a positive number" unless @amount.is_a?(Numeric) && @amount > 0
       raise InvalidCurrencyError, "Currency must be one of #{SUPPORTED_CURRENCIES.join(", ")}" unless SUPPORTED_CURRENCIES.include?(@currency)
       raise InvalidCardError, "Card number must be exactly 16 digits" unless @card_number.match(/\A\d{16}\z/)
       if @merchant.nil? || @merchant.empty? 
