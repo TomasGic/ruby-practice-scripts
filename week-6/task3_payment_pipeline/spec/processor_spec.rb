@@ -1,13 +1,12 @@
 RSpec.describe PaymentPipeline::Processor do
-  
+
   let(:request) do
-    instance_double(
-      PaymentPipeline::PaymentRequest,
+    PaymentPipeline::PaymentRequest.new(
       id: "REQ-12345",
       amount: 99.50,
       currency: "EUR",
       merchant: "Book Store",
-      masked_card: "****4444"
+      card_number: "4111111111111111"
     )
   end
 

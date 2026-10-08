@@ -42,10 +42,11 @@ RSpec.describe PaymentPipeline::BaseValidator do
       end
 
 
-      it "skips validation and returns success if validator cannot validate request" do
+      it "skips validation and returns skipped validation error hash if validator cannot validate request" do
         request = { should_run: false }
         result = @validator.validate(request)
-        expect(result[:valid]).to be true
+        expect(result[:valid]).to be false
+        expect(result[:error]).to match(/Validation skipped/)
       end
     end
 
