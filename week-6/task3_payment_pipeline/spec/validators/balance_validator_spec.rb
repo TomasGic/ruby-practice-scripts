@@ -9,7 +9,20 @@ RSpec.describe PaymentPipeline::BalanceValidator do
         merchant: "Mediamarkt"
       )
   end
+
+  let(:cannot_validate_request) { double('Request', amount: nil)}
   let(:validator) { described_class.new(balance: balance) }
+
+  describe "#validate" do
+    context "when the payment request amount is nil" do
+      it "returns the skipped validation error hash" do
+        result = validator.validate(cannot_validate_request)
+        expect(result[:valid]).to be false
+        expect(result[:error]).to match(/Validation skipped/)
+        expect(result[:validator]).to eq("BalanceValidator")
+      end
+    end
+  end
 
   describe "#perform validation" do
     it "returns failure when payment amount exceeds balance" do

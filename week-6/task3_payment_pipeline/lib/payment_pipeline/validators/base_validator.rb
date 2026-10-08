@@ -7,12 +7,18 @@ module PaymentPipeline
       @next_handler = next_handler
     end
 
-
     def validate(request)
       if can_validate?(request)
         result = perform_validation(request)
         #if validation fails, result[:valid] is false and we stop the validation chain
         return result unless result[:valid]
+      else 
+        validator_name = self.class.name.to_s.split("::").last
+        return {
+          valid: false,
+          error: "Validation skipped: #{validator_name} cannot evaluate this request",
+          validator: validator_name
+        }
       end
 
 
