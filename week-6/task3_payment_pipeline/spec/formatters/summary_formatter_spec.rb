@@ -25,7 +25,7 @@ RSpec.describe PaymentPipeline::SummaryFormatter do
   describe "#format" do
     it "correctly outputs a string with payment ID, amount and status" do
       output = formatter.format(request, result)
-      expect(output).to match(/Payment #[a-zA-Z0-9]{6}: 99\.50 EUR - SUCCESS/)
+      expect(output).to eq("Payment REQ-12345: 99.50 EUR - SUCCESS")
     end
   end
 end
