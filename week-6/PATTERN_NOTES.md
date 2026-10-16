@@ -1,12 +1,12 @@
 # Design patterns used across all 3 exercises
 
-## Factory method pattern
+## Factory Method Pattern
 * **Where it's used**: inside `BaseCalculator` class we define a class method `self.for` which accepts carrier as a parameter. This class method encapsulates the creation of a concreate shipping calculator (standard, express or overnight), which means the creation is hidden away from the main code. If we want to create a shipping calculator for standard carrier, we can use `calculator = Shipping::ShippingCalculator.for(carrier: :standard)`. This way, the creation of a concrete shipping calculator object is hidden away from the main code (our executable demo file).
 
 * **problem it solved**: Factory method pattern decouples the selection and instantiation of a concrete shipping calculator class from the caller, which in our case is the demo script. If also simplifies the addition of a shipping calculator class for a new carrier. 
 
 * **What the code would look like without the pattern**:
-```
+```ruby
 calculator = case carrier
              when :standard
                Shipping::StandardCalculator.new
@@ -23,7 +23,7 @@ calculator = case carrier
 
 You just configure `adapter: :postgresql` in the database config, and a factory method inspects this setting and returns the appropriate adapter instance (`PostgreSQLAdapter`, `Mysql2Adapter` or `SQLite3Adapter`).
 
-## Template method pattern
+## Template Method Pattern
 * **Where it's used**: The template method pattern is implemented inside the `ShippingCalculator` base class that defines the main calculation algorithm (this is done inside the public method `#calculate`). The method outlines a template of steps that are needed to calculate the final shipping cost. The steps are as follows: 
 
 1. Logging the package summary.
@@ -42,7 +42,7 @@ The base class defines the template and lets the subclasses override the calcula
 ### What the code would look like without the pattern
 Without using the template method pattern, our concrete calculator subclasses would have to override the entire `#calculate` from scratch. Since some steps of the calculation algorithm are shared between all subclasses, this would lead to code duplication and would validate the DRY (Do Not Repeat Yourself) principle.
 
-```
+```ruby
 class StandardCalculator < ShippingCalculator
   include Loggable
 
@@ -112,3 +112,56 @@ Rails defines the skeleton algorithm inside `ActiveRecord::Persistence#save`. It
 4. Send a success or failure report
 
 * **How Template Method Solves It: We create an `AbstractImporter` base class with an `#import` template method defining steps 1 through 5. Subclasses like `CsvImporter` or `ApiImporter` only override step 2 (`parse_records`), leaving the core database transaction and reporting orchestration cleanly centralized in the base class. 
+
+## Decorator Pattern
+### Where it's used
+The decorator pattern is used in `decorators.rb` where we define a `ProductDecorator` class. This purpose of this class is to add special attributes to our product objects (like gift wrapping or insurance) without modifying the base `Product` class or using complex inheritance. The decorator pattern allows us to stack multiple decorators, each adding a specific feature to our base product. 
+
+### What problem it solves
+The decorator patterns solves the subclass explosion problem, where combining multiple product features would require its own subclass. For example, if we wanted to add both insurance and gift wrapping to our product without using the decorator pattern, we would have to create a subclass for each combination of features (`GiftWrapppedAndInsuredProduct` or `InsuredAndExpressShippedProduct`). With decorator pattern, we have only one subclass for each product feature and combining them is much easier, because we can wrap the product object inside one or more decorator objects that share the same interface, which allows us to add the features dynamically at runtime.
+
+## What the code would look like without the pattern
+Without the decorator pattern we would have to create a subclass for each combination of product features: 
+```ruby
+module Orders
+  #product with gift wrapping and insurance
+  class GiftWrappedAndInsuredProduct < Product
+    def name
+      "#{super} + Gift Wrap + Insurance"
+    end
+
+    def price
+      super + 4.99 + 9.99
+    end
+  end
+
+  #product with gift wrapping, insurance and express shipping
+  class GiftWrappedInsuredAndExpresslyShippedProduct < Product
+    def name 
+      "#{super} + Gift Wrap + Insurance + Express Shipping"
+    end
+
+    def price 
+      super + 4.99 + 9.99 + 14.99
+    end
+  end
+```
+Since there are 3 distinct product features, we would need 8 subclasses in total. Adding just 1 extra feature would cause the total number of subclasses to increase exponentially to 16!
+
+## Real-world example where the pattern is used
+* **Ruby Standard Library: HTTP & I/O Streams**: 
+In lower-level networking and file processing, decorators wrap standard stream objects to layer on capabilities like buffering, compression, or encryption without modifying the base stream.
+
+```ruby
+require 'zlib'
+require 'stringio'
+
+# 1. Base Stream Object (raw byte payload)
+raw_stream = StringIO.new(gzipped_binary_data)
+
+# 2. Decorator: Wraps the raw stream with decompression behavior on the fly
+decompressed_stream = Zlib::GzipReader.new(raw_stream)
+
+# Reading from the decorator transparently reads and decompresses raw_stream bytes
+content = decompressed_stream.read
+```
