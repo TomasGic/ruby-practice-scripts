@@ -165,3 +165,54 @@ decompressed_stream = Zlib::GzipReader.new(raw_stream)
 # Reading from the decorator transparently reads and decompresses raw_stream bytes
 content = decompressed_stream.read
 ```
+
+## Observer Pattern
+### Where it's used
+The observer pattern is implemented using the `Observable` mixin and the `BaseObserver` class. The subject component of the observer pattern is actually the `Order` class, where `Observable` is included. Including the `Observable` mixin in the `Order` class ensures that `Order` has access to the mixin's methods. The reason the observer pattern is implemented using a mixin is the separation of concerns and reusability. The implementation of the methods that enable adding and notifying observers is encapsulated inside the `Observable` mixin keeping the `Order` class focused on order-related business logic, such as adding items and completing the order. If we ever need to build a class that will need to notify observers, we can simply reuse the `Observable` mixin.
+
+The observer interface itself is implemented inside `BaseObserver` class: `def update(event, data)`, which is then inherited by the concrete observer classes, `EmailNotifier`, `AnalyticsTracker` and `InventoryManager`. 
+
+## What problem it solves
+The observer pattern solves the problem of tight coupling between the subject (in our case the `Order` class) holds state, and the objects that need to react when that state changes. The state that `Order` holds refers is captured by the two instance variables `@items` that stores the product hashes and `@completed` that stores a boolean value (`true` or `false`) and thus tracks the order completion. 
+
+Without the observer pattern, the `Order` class would have to hold reference to the individual observers and it would need to know which methods to call on them. In other words, the `Order` class would be doing too much and such design would violate the Single Responsibility Principle. 
+
+## What the code would look like without the pattern
+```ruby
+module Orders
+  
+  class Order
+    attr_reader :items, :completed
+
+    def initialize
+      @items = []
+      @completed = false
+
+      @email_notifier = EmailNotifier.new
+      @analytics_tracker = AnalyticsTracker.new
+      @inventory_manager = InventoryManager.new
+    end
+
+    def add_item(product:, quantity:)
+      unless quantity.is_a?(Integer) && quantity > 0
+        raise InvalidQuantityError, "Quantity must be a positive integer."
+      end 
+      raise AlreadyCompletedError, "Cannot add items to already completed order" if @completed
+      item = { product_name: product.name, count: quantity, total_price: product.price * quantity }
+      @items << item
+      
+      @analytics_tracker.track_item_added(product: item[:product_name], quantity: item[:count])
+      @inventory_manager.adjust_stock(product: item[:product_name], quantity: item[:count])
+    end
+  end
+end
+```
+
+## Real-world examples where the pattern is used
+The Observer pattern is used in applications where changes in one object need to be automatically reflected in multiple others:
+
+* **Social Media Notifications**: Users (observers) receive updates when someone they follow (subject) posts new content.
+
+* **Stock Market Apps**: Investors get real-time updates when stock prices (subjects) change.
+
+* **Event Listeners in GUIs**: UI components respond to user actions like clicks or keyboard input.
