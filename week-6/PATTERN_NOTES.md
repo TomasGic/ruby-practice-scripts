@@ -172,12 +172,12 @@ The observer pattern is implemented using the `Observable` mixin and the `BaseOb
 
 The observer interface itself is implemented inside `BaseObserver` class: `def update(event, data)`, which is then inherited by the concrete observer classes, `EmailNotifier`, `AnalyticsTracker` and `InventoryManager`. 
 
-## What problem it solves
+### What problem it solves
 The observer pattern solves the problem of tight coupling between the subject (in our case the `Order` class) holds state, and the objects that need to react when that state changes. The state that `Order` holds refers is captured by the two instance variables `@items` that stores the product hashes and `@completed` that stores a boolean value (`true` or `false`) and thus tracks the order completion. 
 
 Without the observer pattern, the `Order` class would have to hold reference to the individual observers and it would need to know which methods to call on them. In other words, the `Order` class would be doing too much and such design would violate the Single Responsibility Principle. 
 
-## What the code would look like without the pattern
+### What the code would look like without the pattern
 ```ruby
 module Orders
   
@@ -208,7 +208,7 @@ module Orders
 end
 ```
 
-## Real-world examples where the pattern is used
+### Real-world examples where the pattern is used
 The Observer pattern is used in applications where changes in one object need to be automatically reflected in multiple others:
 
 * **Social Media Notifications**: Users (observers) receive updates when someone they follow (subject) posts new content.
@@ -216,3 +216,50 @@ The Observer pattern is used in applications where changes in one object need to
 * **Stock Market Apps**: Investors get real-time updates when stock prices (subjects) change.
 
 * **Event Listeners in GUIs**: UI components respond to user actions like clicks or keyboard input.
+
+
+## Adapter Pattern
+### Where the pattern is used
+The adapter pattern lives at the boundary layer where the program communicates with third-party payment gateway APIs. For each external payment service (our program uses Stripe and Paypal), we created its corresponding adapter class, `StripeAdapter` and `PaypalAdapter`. These adapter classes implement a common interface `#charge` that translates the response from each payment gateway into a payment result object that our program expects. 
+
+### What problem it solves
+The adapter pattern solves the problem of interface mismatch between the two payment gateways (stripe and paypal). Each interface accepts payment request data in slightly different formats and the they both return different response objects (hashes). The adapter pattern acts as a translator that converts our program's payment data format into the format that each payment gateway can process and also normalizes the responses into a uniform `PaymentResult` object.
+
+## What the code would like without the pattern
+Without the adapter pattern, the client code would be inflated with unneccessary conditional logic to determine which payment gateway (and which interface) needs to be used to process a given payment request. 
+
+```ruby
+module PaymentPipeline 
+  class Processor 
+    include Observable
+    
+    def initialize(validator_chain:, gateway_type:, gateway:, formatter:, observers:)
+      @validator_chain = validator_chain
+      @gateway = gateway 
+      @formatter = formatter
+      @observers = observers
+    end
+
+    def process(request)
+      notify_observers(event: :payment_started, data: { request_id: request.id, amount: request.amount, merchant: request.merchant })
+      validation_result = @validator_chain.validate(request)
+
+      unless validation_result[:valid]
+        return output_validation_failure(request, validation_result)
+      end
+
+      notify_observers(event: :validation_passed, data: { request_id: request.id })
+
+      if @gateway.class.name == 'StripeGateway'
+        cents = (request.amount.to_d * 100).to_i
+        @gateway.process_charge(cents: cents, currency_code: request.currency, token: request.card_token)
+      elsif @gateway.class.name == 'PaypalGateway'
+        @gateway.send_payment(amount_str: request.amount.to_s, currency: request.currency, reference: request.card_token)
+      end
+    end
+```
+
+## Real-world examples where the pattern is used
+* Software that use different file formats (like CSV, JSON, XML) uses adapters to convert these into a format that the application can work with. 
+
+* Device drivers in operating systems impelement the standard interface that the OS Kernel expects to communicate with the hardware device, such as graphics card, keyboard, hard disks, etc. This is essentially the same adapter pattern used in our Ruby payment pipeline application. 
