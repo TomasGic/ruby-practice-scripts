@@ -225,7 +225,7 @@ The adapter pattern lives at the boundary layer where the program communicates w
 ### What problem it solves
 The adapter pattern solves the problem of interface mismatch between the two payment gateways (stripe and paypal). Each interface accepts payment request data in slightly different formats and the they both return different response objects (hashes). The adapter pattern acts as a translator that converts our program's payment data format into the format that each payment gateway can process and also normalizes the responses into a uniform `PaymentResult` object.
 
-## What the code would like without the pattern
+### What the code would like without the pattern
 Without the adapter pattern, the client code would be inflated with unneccessary conditional logic to determine which payment gateway (and which interface) needs to be used to process a given payment request. 
 
 ```ruby
@@ -259,7 +259,136 @@ module PaymentPipeline
     end
 ```
 
-## Real-world examples where the pattern is used
+### Real-world examples where the pattern is used
 * Software that use different file formats (like CSV, JSON, XML) uses adapters to convert these into a format that the application can work with. 
 
 * Device drivers in operating systems impelement the standard interface that the OS Kernel expects to communicate with the hardware device, such as graphics card, keyboard, hard disks, etc. This is essentially the same adapter pattern used in our Ruby payment pipeline application. 
+
+## Strategy Pattern
+### Where it is used
+In order to pinpoint where the strategy pattern is used, it is essential to first understand what the components of the strategy pattern are.
+
+* **Context**:
+The context is the intermediary between the client code (our demo script) and the strategy, delegating tasks to the selected strategy. It holds the reference to the strategy object and can switch between different strategies at runtime. In our application the context is the `Processor` class, and the strategy object is the formatter which is passed as an argument into the `Processor` class. 
+
+* **Strategy interface**: 
+Defines a common interface that all strategies must implement. In our application this is the `#format` method which varies for each concrete formatter.
+
+* **Concrete strategies**: These are `SummaryFormatter`, `DetailedFormatter` and `JsonFormatter`.
+
+* **Client**: This is the executable demo script. 
+
+## What problem it solves
+The strategy pattern solves several problems:
+
+* **Bloated class and tight coupling**: Without the strategy pattern, the `Processor` class would contain the actual formatting logic inside `#process`. This would violate both the single responsibility principle and the open/close principle. Adding a new formatter would require changing the `Processor` class and the `#process` method would become bloated very quickly.
+
+* **Testing the formatting logic would be difficult**: For example to test `SummaryFormatter`, we would have to run the entire `process` method. With the strategy pattern, we can test `SummaryFormatter` in isolation.
+
+* **Limited code reusability**:
+Without the strategy pattern, it is difficult to reuse the formatting algorithms (strategies) in other parts of the application. Strategy pattern solves this problem by encapsulating the formatting logic in separate classes which reduces code duplication and makes the application more easily maintanable. 
+
+## What the code would look like without the pattern
+```ruby
+module PaymentPipeline 
+  class Processor 
+    include Observable
+    
+    def initialize(validator_chain:, gateway:, format_type:, observers:)
+      @validator_chain = validator_chain
+      @gateway = gateway
+      @format_type = format_type
+      @observers = observers
+    end
+
+    def process(request)
+      notify_observers(event: :payment_started, data: { request_id: request.id, amount: request.amount, merchant: request.merchant })
+      validation_result = @validator_chain.validate(request)
+
+      unless validation_result[:valid]
+        return output_validation_failure(request, validation_result)
+      end
+
+      notify_observers(event: :validation_passed, data: { request_id: request.id })
+
+      payment_result = @gateway.charge(amount: request.amount, currency: request.currency, card_token: request.masked_card)
+
+      if payment_result.success
+        notify_observers(event: :payment_succeeded, data: { request_id: request.id, amount: request.amount, transaction_id: payment_result.transaction_id })
+      else
+        notify_observers(event: :payment_failed, data: { request_id: request.id, error: payment_result.message })
+      end
+      
+      format_payment_result(request, payment_result)
+    end
+
+    private 
+
+    def format_payment_result(request, result)
+      case @format_type
+      when :summary  
+        "Payment #{request.id}: #{'%.2f' % request.amount} #{request.currency} - #{result.success ? 'SUCCESS' : 'FAILED'}"
+      
+      when :detailed
+      <<~OUTPUT
+        PAYMENT RESULT DETAILS 
+        ------------------------------------------
+        Status:         #{result.success ? 'Success' : 'Failed'}
+        Transaction ID: #{result.transaction_id || 'N/A'}
+        Timestamp:      #{Time.now.strftime("%Y-%m-%d %H:%M:%S")}
+        Message:        #{result.message}
+        
+        PAYMENT REQUEST DETAILS 
+        --------------------------------------------
+        Request ID:     #{request.id}
+        Merchant:       #{request.merchant}
+        Amount:         #{'%.2f' % request.amount} #{request.currency}
+        Gateway:        #{result.gateway}
+        Card:           #{request.masked_card}
+      OUTPUT
+
+      when :json
+        require 'json'
+        JSON.pretty_generate(
+          {
+            result: {
+              status: result.success ? "success" : "failed",
+              transaction_id: result.transaction_id || "N/A",
+              timestamp: Time.now.strftime("%Y-%m-%d %H:%M:%S"),
+              message: result.message,
+              gateway: result.gateway
+            },
+            request: {
+              request_id: request.id,
+              merchant: request.merchant,
+              amount: "#{'%.2f' % request.amount} #{request.currency}",
+              card: request.masked_card 
+            }
+          }
+        )
+      end
+    end
+
+    def output_validation_failure(request, validation_result)
+      notify_observers(event: :validation_failed, data: { request_id: request.id, error: validation_result[:error], validator: validation_result[:validator] })
+      @formatter.format(
+        request,
+        PaymentResult.new(
+          gateway: "none",
+          success: false,
+          transaction_id: nil,
+          message: validation_result[:error]
+        )
+      )
+    end
+  end
+end
+```
+
+## Real-world examples where the pattern is used
+* **E-commerce platforms** use the strategy pattern to implement different payment strategies (iDeal, Credit card, PayPal, etc.), similar to how they are implemented in our paypemt pipeline simulation app.
+
+* **File Compression and Archiving Tools**: When a user backs up files or compresses a folder, they can choose different compression algorithms depending on whether they care about speed or maximum file reduction.
+
+* **NPCs and Enemy Behaviours in Game Development**:
+In video games, Non-Player Characters (NPCs) need to react dynamically to the player's actions or the difficulty setting. Game developers can switch an enemy's behavior on the fly (for example changing from defensive to aggressive when a boss enters "Phase 2") by simply swapping out the strategy object.
